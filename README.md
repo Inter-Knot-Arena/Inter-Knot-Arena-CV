@@ -12,6 +12,14 @@ Computer-vision package for match-time verification in VerifierApp.
 
 See `contracts/match-cv-output.schema.json`.
 
-## Status
+## Runtime stub (v1)
 
-Scaffold initialized.
+- `runtime/matcher.py` exposes deterministic hybrid matcher.
+- `scripts/run_match_check.py` emits contract-compliant payload for `PRECHECK`/`INRUN`.
+
+## Quick run
+
+```powershell
+pip install -r requirements.txt
+python scripts/run_match_check.py --mode PRECHECK --expected agent_anby,agent_nicole,agent_ellen --detected agent_anby,agent_nicole,agent_ellen
+```

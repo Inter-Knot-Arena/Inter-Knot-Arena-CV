@@ -9,11 +9,20 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "unexpectedAgents": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
     "confidence": {
       "type": "object",
       "additionalProperties": { "type": "number" }
     },
+    "confidenceByField": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
     "result": { "type": "string", "enum": ["PASS", "VIOLATION", "LOW_CONF"] },
-    "frameHash": { "type": "string" }
+    "frameHash": { "type": "string" },
+    "modelVersion": { "type": "string" }
   }
 }
