@@ -1,0 +1,23 @@
+{
+  "name": "ika_cv_private_dataset",
+  "version": "1.0.0",
+  "storagePolicy": {
+    "rawDataInGit": false,
+    "notes": "Raw data stays in private local storage only."
+  },
+  "privateStorageRoot": "",
+  "directoryLayout": {
+    "raw": "",
+    "frames_precheck": "",
+    "frames_inrun": "",
+    "labels_agents": "",
+    "labels_states": ""
+  },
+  "sources": [],
+  "records": [],
+  "splits": {
+    "train": [],
+    "val": [],
+    "test": []
+  }
+}

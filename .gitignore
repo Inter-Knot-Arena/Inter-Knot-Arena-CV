@@ -1,3 +1,9 @@
-﻿__pycache__/
+__pycache__/
 *.pyc
 .venv/
+dataset_private/
+raw/
+frames_precheck/
+frames_inrun/
+labels_agents/
+labels_states/

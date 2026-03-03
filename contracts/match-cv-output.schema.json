@@ -1,8 +1,8 @@
-﻿{
+{
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "MatchCvOutput",
   "type": "object",
-  "required": ["type", "detectedAgents", "result"],
+  "required": ["type", "detectedAgents", "result", "frameHash", "modelVersion"],
   "properties": {
     "type": { "type": "string", "enum": ["PRECHECK", "INRUN"] },
     "detectedAgents": {
@@ -22,7 +22,15 @@
       "additionalProperties": { "type": "number" }
     },
     "result": { "type": "string", "enum": ["PASS", "VIOLATION", "LOW_CONF"] },
-    "frameHash": { "type": "string" },
-    "modelVersion": { "type": "string" }
-  }
+    "frameHash": { "type": "string", "minLength": 32 },
+    "modelVersion": { "type": "string" },
+    "lowConfReasons": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "timingMs": { "type": "number", "minimum": 0 },
+    "resolution": { "type": "string", "enum": ["1080p", "1440p"] },
+    "locale": { "type": "string", "enum": ["RU", "EN"] }
+  },
+  "additionalProperties": true
 }
