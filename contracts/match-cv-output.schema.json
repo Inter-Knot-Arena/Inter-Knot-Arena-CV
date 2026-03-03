@@ -1,0 +1,19 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MatchCvOutput",
+  "type": "object",
+  "required": ["type", "detectedAgents", "result"],
+  "properties": {
+    "type": { "type": "string", "enum": ["PRECHECK", "INRUN"] },
+    "detectedAgents": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "result": { "type": "string", "enum": ["PASS", "VIOLATION", "LOW_CONF"] },
+    "frameHash": { "type": "string" }
+  }
+}
