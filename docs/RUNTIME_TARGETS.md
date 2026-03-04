@@ -30,6 +30,8 @@
 
 - `LOW_CONF` never triggers auto-penalty.
 - Enforcement is server-side and requires valid violation evidence.
+- Missing `expectedAgents` is downgraded to `LOW_CONF`.
+- Banned-agent detection is emitted as `VIOLATION`.
 
 ## Supported baseline
 

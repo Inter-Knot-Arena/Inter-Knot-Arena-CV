@@ -25,6 +25,8 @@ See `contracts/match-cv-output.schema.json`.
   - per-agent confidence
   - `lowConfReasons[]`
   - `frameHash`, `timingMs`, `resolution`, `locale`
+- Missing expected team in payload is treated as `LOW_CONF` (no auto-violation).
+- Banned-agent hit is treated as `VIOLATION`.
 - In-run mode applies lightweight temporal smoothing from previous detections.
 
 ## Quick run

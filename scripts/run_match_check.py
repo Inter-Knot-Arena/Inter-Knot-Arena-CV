@@ -19,6 +19,7 @@ def main() -> int:
     parser.add_argument("--expected", required=True, help="Comma-separated expected agents")
     parser.add_argument("--detected", required=True, help="Comma-separated detected agents")
     parser.add_argument("--history", default="", help="Comma-separated previous in-run detections")
+    parser.add_argument("--banned", default="", help="Comma-separated banned agents")
     parser.add_argument("--locale", default="EN", choices=["EN", "RU"])
     parser.add_argument("--resolution", default="1080p", choices=["1080p", "1440p"])
     parser.add_argument("--frame-path", default="", help="Optional screenshot path for real detection")
@@ -28,6 +29,7 @@ def main() -> int:
     result = evaluate_detection(
         expected_agents=parse_list(args.expected),
         detected_agents=parse_list(args.detected),
+        banned_agents=parse_list(args.banned),
         mode=args.mode,
         locale=args.locale,
         resolution=args.resolution,

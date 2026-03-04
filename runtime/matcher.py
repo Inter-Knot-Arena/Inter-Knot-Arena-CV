@@ -115,6 +115,12 @@ def _classify_from_frame(
         prediction = classifier.predict(crop)
         template = template_scores(crop)
         template_score = float(template.get(prediction.label, 0.0))
+        if prediction.confidence < 0.6:
+            reasons.append(f"low_conf_classifier:{prediction.label}")
+            continue
+        if template_score < 0.58:
+            reasons.append(f"low_conf_template:{prediction.label}")
+            continue
         temporal = _temporal_support(prediction.label, history_agents)
         merged_conf = max(0.0, min(0.995, prediction.confidence * 0.7 + template_score * 0.2 + temporal * 0.1))
         if merged_conf < 0.55:
@@ -133,6 +139,7 @@ def evaluate_detection(
     expected_agents: Iterable[str],
     detected_agents: Iterable[str],
     mode: str,
+    banned_agents: Iterable[str] | None = None,
     locale: str = "EN",
     resolution: str = "1080p",
     history_agents: Iterable[str] | None = None,
@@ -148,6 +155,7 @@ def evaluate_detection(
     layout_reasons = _validate_layout(locale=locale, resolution=resolution)
 
     expected = list(dict.fromkeys(_normalize(agent) for agent in expected_agents if _normalize(agent)))
+    banned = list(dict.fromkeys(_normalize(agent) for agent in (banned_agents or []) if _normalize(agent)))
     detected_payload = list(dict.fromkeys(_normalize(agent) for agent in detected_agents if _normalize(agent)))
     history = list(history_agents or [])
 
@@ -172,7 +180,12 @@ def evaluate_detection(
         if not detected:
             low_conf_reasons.append("frame_capture_failed")
 
+    if not expected:
+        low_conf_reasons.append("expected_agents_missing")
+
     unexpected = [agent for agent in detected if agent not in expected]
+    banned_detected = [agent for agent in detected if agent in banned]
+    unexpected = sorted(set(unexpected + banned_detected))
     missing = [agent for agent in expected if agent not in detected]
     if missing:
         low_conf_reasons.append("missing_expected_agents")
@@ -184,7 +197,9 @@ def evaluate_detection(
                 base += _temporal_support(agent, history)
             confidence[agent] = round(min(0.995, max(0.1, base)), 4)
 
-    if unexpected:
+    if banned_detected:
+        result = "VIOLATION"
+    elif unexpected and expected:
         result = "VIOLATION"
     elif low_conf_reasons:
         result = "LOW_CONF"
