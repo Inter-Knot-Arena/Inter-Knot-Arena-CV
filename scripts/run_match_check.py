@@ -21,6 +21,8 @@ def main() -> int:
     parser.add_argument("--history", default="", help="Comma-separated previous in-run detections")
     parser.add_argument("--locale", default="EN", choices=["EN", "RU"])
     parser.add_argument("--resolution", default="1080p", choices=["1080p", "1440p"])
+    parser.add_argument("--frame-path", default="", help="Optional screenshot path for real detection")
+    parser.add_argument("--orientation", default="vertical", choices=["vertical", "horizontal"])
     args = parser.parse_args()
 
     result = evaluate_detection(
@@ -30,6 +32,8 @@ def main() -> int:
         locale=args.locale,
         resolution=args.resolution,
         history_agents=parse_list(args.history),
+        frame_path=args.frame_path or None,
+        orientation=args.orientation,
     )
     print(json.dumps(result, ensure_ascii=True, indent=2))
     return 0

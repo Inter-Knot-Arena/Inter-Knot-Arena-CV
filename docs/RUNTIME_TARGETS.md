@@ -17,6 +17,15 @@
 - Monitoring cadence 10-20 sec with low overhead.
 - CPU fallback remains available when DirectML is unavailable.
 
+## Baseline implementation in repo
+
+- `scripts/train_synthetic_cv_model.py` exports:
+  - `models/cv_agent_icon.onnx`
+  - `models/cv_agent_icon.labels.json`
+  - `assets/templates/*.png`
+- `runtime/matcher.py` combines ONNX probabilities with template matching and temporal smoothing.
+- `scripts/benchmark_runtime.py` provides latency percentile benchmark.
+
 ## Operational policy
 
 - `LOW_CONF` never triggers auto-penalty.
