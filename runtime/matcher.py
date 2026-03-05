@@ -12,7 +12,7 @@ import cv2
 import numpy as np
 from PIL import ImageGrab
 
-from .model_runtime import CvAgentClassifier, template_scores
+from .model_runtime import CvAgentClassifier, get_model_metadata, template_scores
 
 try:
     import dxcam  # type: ignore
@@ -215,6 +215,7 @@ def evaluate_detection(
     capture_screen: bool = False,
 ) -> Dict[str, Any]:
     started = time.perf_counter()
+    metadata = get_model_metadata(DEFAULT_MODEL_VERSION)
 
     normalized_mode = _normalize_mode(mode)
     layout_reasons = _validate_layout(locale=locale, resolution=resolution)
@@ -288,7 +289,8 @@ def evaluate_detection(
         "confidenceByField": confidence_by_field,
         "result": result,
         "frameHash": frame_hash_hint or _build_frame_hash(normalized_mode, expected, detected, locale, resolution),
-        "modelVersion": DEFAULT_MODEL_VERSION,
+        "modelVersion": metadata["modelVersion"],
+        "dataVersion": metadata["dataVersion"],
         "lowConfReasons": sorted(set(low_conf_reasons)),
         "timingMs": round((time.perf_counter() - started) * 1000.0, 2),
         "resolution": resolution.lower(),

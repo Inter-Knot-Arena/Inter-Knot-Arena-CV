@@ -1,7 +1,17 @@
 {
   "cv_agent_icon_model": {
-    "accuracy": 0.999537037037037,
-    "samplesPerClass": 1800,
-    "backgroundCount": 240
+    "accuracy": 1.0,
+    "macroF1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "ece": 0.0,
+    "latencyMsP50": 0.0,
+    "latencyMsP95": 0.0,
+    "backgroundCount": 0,
+    "dataVersion": "1.1.0",
+    "trainedAt": "2026-03-05T01:44:43Z",
+    "recordCount": 0,
+    "skippedRecords": 0,
+    "mode": "synthetic_fallback"
   }
 }

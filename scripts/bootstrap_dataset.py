@@ -2,19 +2,43 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict
+
+
+DEFAULT_SPLIT_RATIO = {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1,
+}
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def default_manifest() -> Dict[str, Any]:
     return {
         "name": "ika_cv_private_dataset",
-        "version": "1.0.0",
+        "version": "1.1.0",
+        "schemaVersion": "dataset-manifest-v1",
+        "updatedAt": _utc_now(),
         "storagePolicy": {
             "rawDataInGit": False,
             "notes": "Raw data stays in private local storage only.",
         },
+        "splitSeed": 42,
+        "splitRatio": DEFAULT_SPLIT_RATIO,
         "splits": {"train": [], "val": [], "test": []},
+        "qaStatus": {
+            "prelabel": "pending",
+            "humanReview": "pending",
+            "qaPass2": "pending",
+            "doubleReviewRate": 0.1,
+            "interAnnotatorAgreement": None,
+        },
+        "hardSamplesRef": "",
         "sources": [],
         "records": [],
     }
@@ -41,6 +65,24 @@ def main() -> int:
     else:
         payload = default_manifest()
 
+    payload.setdefault("schemaVersion", "dataset-manifest-v1")
+    payload.setdefault("splitSeed", 42)
+    payload.setdefault("splitRatio", DEFAULT_SPLIT_RATIO.copy())
+    payload.setdefault("splits", {"train": [], "val": [], "test": []})
+    payload.setdefault(
+        "qaStatus",
+        {
+            "prelabel": "pending",
+            "humanReview": "pending",
+            "qaPass2": "pending",
+            "doubleReviewRate": 0.1,
+            "interAnnotatorAgreement": None,
+        },
+    )
+    payload.setdefault("hardSamplesRef", "")
+    payload.setdefault("sources", [])
+    payload.setdefault("records", [])
+
     payload["privateStorageRoot"] = str(storage_root)
     payload["directoryLayout"] = {
         "raw": str(storage_root / "raw"),
@@ -49,6 +91,7 @@ def main() -> int:
         "labels_agents": str(storage_root / "labels_agents"),
         "labels_states": str(storage_root / "labels_states"),
     }
+    payload["updatedAt"] = _utc_now()
 
     with manifest_path.open("w", encoding="utf-8") as fh:
         json.dump(payload, fh, ensure_ascii=True, indent=2)

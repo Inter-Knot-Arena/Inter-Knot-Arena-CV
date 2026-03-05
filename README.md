@@ -49,6 +49,12 @@ pip install -r requirements.txt
 python scripts/train_synthetic_cv_model.py --output-dir models --templates-dir assets/templates --metrics-file docs/model_metrics.json
 ```
 
+Train production model from dataset manifest (with synthetic fallback when data is insufficient):
+
+```powershell
+python scripts/train_cv_model.py --manifest dataset_manifest.json --output-dir models --templates-dir assets/templates --metrics-file docs/model_metrics.json --model-version cv-agent-head-v1.3
+```
+
 Domain-adaptive training with private live backgrounds:
 
 ```powershell
@@ -65,6 +71,12 @@ python scripts/benchmark_runtime.py --iterations 100
 
 ```powershell
 python scripts/bootstrap_dataset.py --storage-root D:\IKA_DATA\cv
+python scripts/ingest_public_sources.py --manifest dataset_manifest.json --sources-file D:\IKA_DATA\cv_sources.json
+python scripts/extract_frames.py --manifest dataset_manifest.json --state precheck --fps 1.0 --scene-aware
+python scripts/extract_frames.py --manifest dataset_manifest.json --state inrun --fps 0.5
+python scripts/deduplicate_frames.py --manifest dataset_manifest.json --input-dir D:\IKA_DATA\cv\frames_precheck
+python scripts/session_capture.py --manifest dataset_manifest.json --mode cv --duration-sec 180 --fps 1.0 --state inrun --locale RU --resolution 1080p
+python scripts/build_sampling_plan.py --manifest dataset_manifest.json --target-per-agent 6000 --target-unknown 8000 --output-file docs/sampling_plan.json
 python scripts/split_dataset.py --manifest dataset_manifest.json --seed 42
 ```
 

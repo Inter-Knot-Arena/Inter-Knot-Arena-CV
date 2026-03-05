@@ -3,8 +3,14 @@ from __future__ import annotations
 import argparse
 import json
 import random
+from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def parse_ratio(raw: str) -> tuple[float, float, float]:
@@ -14,20 +20,48 @@ def parse_ratio(raw: str) -> tuple[float, float, float]:
     total = sum(parts)
     if total <= 0:
         raise ValueError("ratio sum must be positive.")
-    return tuple(value / total for value in parts)  # type: ignore[return-value]
+    normalized = tuple(value / total for value in parts)
+    return normalized  # type: ignore[return-value]
+
+
+def _group_key(record: Dict[str, Any]) -> str:
+    source_id = str(record.get("sourceId") or "src_unknown")
+    session_id = str(record.get("sessionId") or "")
+    match_id = str(record.get("matchId") or "")
+    if session_id:
+        return f"{source_id}::session::{session_id}"
+    if match_id:
+        return f"{source_id}::match::{match_id}"
+    record_id = str(record.get("id") or "")
+    return f"{source_id}::record::{record_id}"
 
 
 def assign_splits(records: List[Dict[str, Any]], seed: int, ratio: tuple[float, float, float]) -> Dict[str, List[str]]:
     rng = random.Random(seed)
-    ids = [str(record.get("id", f"record_{idx}")) for idx, record in enumerate(records)]
-    rng.shuffle(ids)
+    grouped: dict[str, list[str]] = defaultdict(list)
+    for idx, record in enumerate(records):
+        record_id = str(record.get("id", f"record_{idx}"))
+        grouped[_group_key(record)].append(record_id)
 
-    train_cut = int(len(ids) * ratio[0])
-    val_cut = train_cut + int(len(ids) * ratio[1])
+    group_ids = list(grouped.keys())
+    rng.shuffle(group_ids)
+    train_cut = int(len(group_ids) * ratio[0])
+    val_cut = train_cut + int(len(group_ids) * ratio[1])
+    train_groups = set(group_ids[:train_cut])
+    val_groups = set(group_ids[train_cut:val_cut])
+
+    split_ids = {"train": [], "val": [], "test": []}
+    for group_id, record_ids in grouped.items():
+        if group_id in train_groups:
+            split_ids["train"].extend(record_ids)
+        elif group_id in val_groups:
+            split_ids["val"].extend(record_ids)
+        else:
+            split_ids["test"].extend(record_ids)
     return {
-        "train": ids[:train_cut],
-        "val": ids[train_cut:val_cut],
-        "test": ids[val_cut:],
+        "train": split_ids["train"],
+        "val": split_ids["val"],
+        "test": split_ids["test"],
     }
 
 
@@ -57,6 +91,7 @@ def main() -> int:
         "val": ratio[1],
         "test": ratio[2],
     }
+    payload["updatedAt"] = _utc_now()
 
     with manifest_path.open("w", encoding="utf-8") as fh:
         json.dump(payload, fh, ensure_ascii=True, indent=2)

@@ -4,7 +4,7 @@ import json
 import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Sequence
+from typing import Any, Dict, Sequence
 
 import cv2
 import numpy as np
@@ -12,6 +12,7 @@ import onnxruntime as ort
 
 MODEL_DIR = Path(__file__).resolve().parents[1] / "models"
 TEMPLATE_DIR = Path(__file__).resolve().parents[1] / "assets" / "templates"
+MODEL_MANIFEST_PATH = MODEL_DIR / "model_manifest.json"
 
 
 def _provider_priority() -> list[str]:
@@ -27,6 +28,21 @@ def _read_labels(path: Path) -> list[str]:
     if not isinstance(labels, list) or not labels:
         raise ValueError(f"Invalid labels file: {path}")
     return [str(item) for item in labels]
+
+
+def get_model_metadata(default_version: str) -> Dict[str, str]:
+    if not MODEL_MANIFEST_PATH.exists():
+        return {"modelVersion": default_version, "dataVersion": "unknown"}
+    try:
+        with MODEL_MANIFEST_PATH.open("r", encoding="utf-8") as fh:
+            payload: Any = json.load(fh)
+        if not isinstance(payload, dict):
+            return {"modelVersion": default_version, "dataVersion": "unknown"}
+        model_version = str(payload.get("version") or default_version)
+        data_version = str(payload.get("dataVersion") or "unknown")
+        return {"modelVersion": model_version, "dataVersion": data_version}
+    except Exception:
+        return {"modelVersion": default_version, "dataVersion": "unknown"}
 
 
 def _extract_probabilities(raw_output: object, labels: Sequence[str]) -> Dict[str, float]:

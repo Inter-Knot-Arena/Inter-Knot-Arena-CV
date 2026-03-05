@@ -19,13 +19,21 @@
 
 ## Baseline implementation in repo
 
-- `scripts/train_synthetic_cv_model.py` exports:
+- `scripts/train_cv_model.py` trains from manifest-backed real data and falls back to synthetic when data volume is insufficient.
+- `scripts/train_synthetic_cv_model.py` exports synthetic baseline:
   - `models/cv_agent_icon.onnx`
   - `models/cv_agent_icon.labels.json`
+  - `models/model_manifest.json`
   - `assets/templates/*.png`
 - Training script accepts private background frames (`--background-dir`) for domain adaptation to live UI.
 - `runtime/matcher.py` combines ONNX probabilities with template matching and temporal smoothing.
 - `scripts/benchmark_runtime.py` provides latency percentile benchmark.
+- Dataset ingestion pipeline scripts:
+  - `scripts/ingest_public_sources.py`
+  - `scripts/extract_frames.py`
+  - `scripts/deduplicate_frames.py`
+  - `scripts/session_capture.py`
+  - `scripts/build_sampling_plan.py`
 
 ## Operational policy
 

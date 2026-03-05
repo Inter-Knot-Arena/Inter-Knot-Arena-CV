@@ -1,18 +1,34 @@
 {
   "name": "ika_cv_private_dataset",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "schemaVersion": "dataset-manifest-v1",
+  "updatedAt": "2026-03-05T00:00:00Z",
   "storagePolicy": {
     "rawDataInGit": false,
     "notes": "Raw data stays in private local storage only."
   },
-  "privateStorageRoot": "",
+  "privateStorageRoot": "D:\\IKA_DATA\\cv",
   "directoryLayout": {
-    "raw": "",
-    "frames_precheck": "",
-    "frames_inrun": "",
-    "labels_agents": "",
-    "labels_states": ""
+    "raw": "D:\\IKA_DATA\\cv\\raw",
+    "frames_precheck": "D:\\IKA_DATA\\cv\\frames_precheck",
+    "frames_inrun": "D:\\IKA_DATA\\cv\\frames_inrun",
+    "labels_agents": "D:\\IKA_DATA\\cv\\labels_agents",
+    "labels_states": "D:\\IKA_DATA\\cv\\labels_states"
   },
+  "splitSeed": 42,
+  "splitRatio": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "qaStatus": {
+    "prelabel": "pending",
+    "humanReview": "pending",
+    "qaPass2": "pending",
+    "doubleReviewRate": 0.1,
+    "interAnnotatorAgreement": null
+  },
+  "hardSamplesRef": "",
   "sources": [],
   "records": [],
   "splits": {
