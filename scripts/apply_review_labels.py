@@ -2,10 +2,15 @@ from __future__ import annotations
 
 import argparse
 import csv
+import sys
 from pathlib import Path
 from typing import Any, Dict
 
 from manifest_lib import ensure_manifest_defaults, load_manifest, save_manifest, utc_now
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from roster_taxonomy import canonicalize_agent_label
 
 
 def _to_bool(raw: str) -> bool | None:
@@ -15,6 +20,18 @@ def _to_bool(raw: str) -> bool | None:
     if value in {"false", "0", "no", "n"}:
         return False
     return None
+
+
+def _normalize_slot(raw: str, fallback: str) -> str:
+    candidate = str(raw or "").strip() or str(fallback or "").strip()
+    if not candidate:
+        return ""
+    canonical = canonicalize_agent_label(candidate)
+    if canonical:
+        return canonical
+    if candidate == "unknown":
+        return "unknown"
+    raise ValueError(f"Invalid CV agent label: {candidate}")
 
 
 def main() -> int:
@@ -34,6 +51,7 @@ def main() -> int:
 
     applied = 0
     missing = 0
+    invalid = 0
     with Path(args.input_csv).resolve().open("r", encoding="utf-8", newline="") as fh:
         reader = csv.DictReader(fh)
         for row in reader:
@@ -49,6 +67,9 @@ def main() -> int:
             if not isinstance(labels, dict):
                 labels = {}
                 record["labels"] = labels
+            suggested = record.get("suggestedLabels")
+            if not isinstance(suggested, dict):
+                suggested = {}
 
             review_payload: Dict[str, Any] = {
                 "slot_1_agent": str(row.get("slot_1_agent") or "").strip(),
@@ -69,12 +90,26 @@ def main() -> int:
                 labels["reviewerB"] = review_payload
                 record["qaStatus"] = "needs_review"
             else:
-                for key in ("slot_1_agent", "slot_2_agent", "slot_3_agent"):
-                    value = review_payload.get(key)
-                    if isinstance(value, str) and value:
-                        labels[key] = value
+                try:
+                    resolved_slots = {
+                        key: _normalize_slot(
+                            str(review_payload.get(key) or ""),
+                            str(labels.get(key) or suggested.get(key) or ""),
+                        )
+                        for key in ("slot_1_agent", "slot_2_agent", "slot_3_agent")
+                    }
+                except ValueError:
+                    invalid += 1
+                    record["qaStatus"] = "needs_review"
+                    continue
+                for key, value in resolved_slots.items():
+                    labels[key] = value or "unknown"
+
+                explicit_unknown = review_payload.get("unknown_flag")
                 if "unknown_flag" in review_payload:
-                    labels["unknown_flag"] = bool(review_payload["unknown_flag"])
+                    labels["unknown_flag"] = bool(explicit_unknown)
+                else:
+                    labels["unknown_flag"] = any(value == "unknown" for value in resolved_slots.values())
                 labels["reviewFinal"] = {
                     "reviewer": review_payload["reviewer"],
                     "reviewedAt": review_payload["reviewedAt"],
@@ -90,10 +125,9 @@ def main() -> int:
         qa_status["qaUpdatedAt"] = utc_now()
 
     save_manifest(manifest_path, manifest)
-    print(f"Applied labels: {applied}; missing records: {missing}")
+    print(f"Applied labels: {applied}; missing records: {missing}; invalid rows: {invalid}")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
