@@ -1,31 +1,50 @@
 {
-  "recordCount": 74,
+  "recordCount": 662,
   "agentCounts": {
-    "agent_anby": 44,
-    "agent_vivian": 30
+    "agent_vivian": 15,
+    "agent_lycaon": 236,
+    "unknown": 121,
+    "agent_koleda": 13,
+    "agent_anby": 64,
+    "agent_nicole": 213
   },
-  "unknownCount": 0,
+  "unknownCount": 406,
   "localeCounts": {
-    "RU": 74
+    "RU": 284,
+    "EN": 378
   },
   "resolutionCounts": {
-    "1080p": 74
+    "1080p": 531,
+    "1440p": 131
   },
   "stateCounts": {
-    "inrun": 44,
-    "precheck": 30
+    "inrun": 373,
+    "other": 8,
+    "precheck": 281
   },
   "sourceCounts": {
-    "live_session_1772675681": 14,
     "live_session_1772677147": 30,
-    "live_session_1772677183": 30
+    "cv_pub_001": 12,
+    "cv_pub_002": 65,
+    "cv_pub_003": 128,
+    "cv_pub_004": 204,
+    "cv_pub_005": 81,
+    "cv_pub_006": 55,
+    "cv_pub_007": 44,
+    "cv_pub_008": 43
   },
   "localeResolutionCounts": {
-    "RU:1080p": 74
+    "RU:1080p": 249,
+    "EN:1080p": 282,
+    "EN:1440p": 96,
+    "RU:1440p": 35
   },
   "deficits": {
-    "agent_anby": 5956,
-    "agent_vivian": 5970,
-    "unknown": 8000
+    "agent_anby": 5936,
+    "agent_koleda": 5987,
+    "agent_lycaon": 5764,
+    "agent_nicole": 5787,
+    "agent_vivian": 5985,
+    "unknown": 7594
   }
 }

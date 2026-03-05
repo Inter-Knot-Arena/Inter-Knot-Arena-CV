@@ -1,17 +1,23 @@
 {
-  "recordCount": 74,
-  "labeledCount": 74,
-  "needsReviewCount": 0,
-  "unknownFlagCount": 0,
+  "recordCount": 662,
+  "labeledCount": 654,
+  "needsReviewCount": 398,
+  "unknownFlagCount": 398,
   "stateCounts": {
-    "inrun": 44,
-    "precheck": 30
+    "inrun": 373,
+    "other": 8,
+    "precheck": 281
   },
   "labelCounts": {
-    "agent_anby": 144,
-    "agent_vivian": 78
+    "agent_vivian": 124,
+    "unknown": 572,
+    "agent_lycaon": 560,
+    "agent_koleda": 31,
+    "agent_anby": 271,
+    "agent_nicole": 403,
+    "agent_ellen": 1
   },
   "interAnnotatorAgreement": null,
   "agreementComparedSlots": 0,
-  "generatedAt": "2026-03-05T02:21:35Z"
+  "generatedAt": "2026-03-05T03:34:33Z"
 }
