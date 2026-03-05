@@ -9,9 +9,17 @@ from typing import Any, Dict, List
 from manifest_lib import ensure_manifest_defaults, load_manifest, save_manifest, utc_now
 
 
-def _record_label(record: Dict[str, Any], slot: str) -> str:
-    labels = record.get("labels")
+def _label_payload(record: Dict[str, Any], suggested: bool) -> Dict[str, Any]:
+    key = "suggestedLabels" if suggested else "labels"
+    labels = record.get(key)
     if not isinstance(labels, dict):
+        return {}
+    return labels
+
+
+def _record_label(record: Dict[str, Any], slot: str, *, suggested: bool) -> str:
+    labels = _label_payload(record, suggested=suggested)
+    if not labels:
         return ""
     value = labels.get(slot)
     return str(value).strip() if isinstance(value, str) else ""
@@ -64,13 +72,16 @@ def main() -> int:
     if not isinstance(records, list):
         raise ValueError("manifest.records must be an array")
 
-    labeled = 0
+    reviewed = 0
+    suggested = 0
     needs_review = 0
-    unknown = 0
+    reviewed_unknown = 0
+    suggested_unknown = 0
     agreement_match = 0
     agreement_total = 0
     state_counts: Dict[str, int] = {}
-    label_counts: Dict[str, int] = {}
+    reviewed_label_counts: Dict[str, int] = {}
+    suggested_label_counts: Dict[str, int] = {}
 
     valid_records: List[Dict[str, Any]] = []
     for record in records:
@@ -80,17 +91,28 @@ def main() -> int:
         state = str(record.get("state") or "other")
         state_counts[state] = state_counts.get(state, 0) + 1
 
-        labels = record.get("labels")
-        if isinstance(labels, dict):
-            labeled += 1
-            if str(record.get("qaStatus") or "").lower() == "needs_review":
-                needs_review += 1
-            if bool(labels.get("unknown_flag", False)):
-                unknown += 1
+        if str(record.get("qaStatus") or "").lower() == "needs_review":
+            needs_review += 1
+
+        reviewed_labels = _label_payload(record, suggested=False)
+        if reviewed_labels:
+            reviewed += 1
+            if bool(reviewed_labels.get("unknown_flag", False)):
+                reviewed_unknown += 1
             for slot in ("slot_1_agent", "slot_2_agent", "slot_3_agent"):
-                value = _record_label(record, slot)
+                value = _record_label(record, slot, suggested=False)
                 if value:
-                    label_counts[value] = label_counts.get(value, 0) + 1
+                    reviewed_label_counts[value] = reviewed_label_counts.get(value, 0) + 1
+
+        suggested_labels = _label_payload(record, suggested=True)
+        if suggested_labels:
+            suggested += 1
+            if bool(suggested_labels.get("unknown_flag", False)):
+                suggested_unknown += 1
+            for slot in ("slot_1_agent", "slot_2_agent", "slot_3_agent"):
+                value = _record_label(record, slot, suggested=True)
+                if value:
+                    suggested_label_counts[value] = suggested_label_counts.get(value, 0) + 1
         matches, total = _compute_slot_agreement(record)
         agreement_match += matches
         agreement_total += total
@@ -104,11 +126,17 @@ def main() -> int:
 
     report = {
         "recordCount": len(valid_records),
-        "labeledCount": labeled,
+        "labeledCount": reviewed,
+        "reviewedCount": reviewed,
+        "suggestedCount": suggested,
         "needsReviewCount": needs_review,
-        "unknownFlagCount": unknown,
+        "unknownFlagCount": reviewed_unknown,
+        "reviewedUnknownFlagCount": reviewed_unknown,
+        "suggestedUnknownFlagCount": suggested_unknown,
         "stateCounts": state_counts,
-        "labelCounts": label_counts,
+        "labelCounts": reviewed_label_counts,
+        "reviewedLabelCounts": reviewed_label_counts,
+        "suggestedLabelCounts": suggested_label_counts,
         "interAnnotatorAgreement": agreement,
         "agreementComparedSlots": agreement_total,
         "generatedAt": utc_now(),
@@ -141,4 +169,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -8,19 +8,23 @@ from typing import Any, Dict, List
 from manifest_lib import ensure_manifest_defaults, load_manifest
 
 
-def _slot_value(record: Dict[str, Any], key: str) -> str:
+def _payload(record: Dict[str, Any]) -> Dict[str, Any]:
     labels = record.get("labels")
-    if not isinstance(labels, dict):
-        return ""
-    value = labels.get(key)
+    if isinstance(labels, dict) and any(isinstance(value, str) and value for value in labels.values()):
+        return labels
+    suggested = record.get("suggestedLabels")
+    if isinstance(suggested, dict):
+        return suggested
+    return {}
+
+
+def _slot_value(record: Dict[str, Any], key: str) -> str:
+    value = _payload(record).get(key)
     return str(value) if isinstance(value, str) else ""
 
 
 def _unknown_flag(record: Dict[str, Any]) -> str:
-    labels = record.get("labels")
-    if not isinstance(labels, dict):
-        return ""
-    value = labels.get("unknown_flag")
+    value = _payload(record).get("unknown_flag")
     if isinstance(value, bool):
         return "true" if value else "false"
     if isinstance(value, str):
@@ -96,4 +100,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

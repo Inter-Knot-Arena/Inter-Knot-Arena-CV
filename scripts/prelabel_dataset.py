@@ -12,16 +12,12 @@ import numpy as np
 from manifest_lib import ensure_manifest_defaults, load_manifest, save_manifest, utc_now
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from roster_taxonomy import canonicalize_agent_label
 from runtime.model_runtime import CvAgentClassifier, template_scores
 
 
 def _normalize_agent_label(label: str) -> str:
-    value = str(label or "").strip()
-    if value == "unknown":
-        return "unknown"
-    if value.startswith("agent_"):
-        return value
-    return "unknown"
+    return canonicalize_agent_label(label) or "unknown"
 
 
 def _slot_crops(frame: np.ndarray, orientation: str, slots: int = 3) -> List[np.ndarray]:
@@ -68,7 +64,13 @@ def _predict_slot(classifier: CvAgentClassifier, crop: np.ndarray) -> Tuple[str,
 
 def _has_labels(record: Dict[str, Any]) -> bool:
     labels = record.get("labels")
-    return isinstance(labels, dict) and any(isinstance(value, str) and value for value in labels.values())
+    if isinstance(labels, dict):
+        if isinstance(labels.get("reviewFinal"), dict):
+            return True
+        if any(isinstance(value, str) and value for value in labels.values()):
+            return True
+    suggested = record.get("suggestedLabels")
+    return isinstance(suggested, dict) and any(isinstance(value, str) and value for value in suggested.values())
 
 
 def _prelabel_record(
@@ -111,8 +113,8 @@ def _prelabel_record(
 
     labels["unknown_flag"] = unknown
     labels["confidence"] = conf_map
-    record["labels"] = labels
-    record["qaStatus"] = "needs_review" if unknown else "prelabeled"
+    record["suggestedLabels"] = labels
+    record["qaStatus"] = "needs_review"
     return True, "ok"
 
 

@@ -1,21 +1,27 @@
 {
-  "recordCount": 6483,
-  "labeledCount": 6471,
-  "needsReviewCount": 269,
-  "unknownFlagCount": 269,
+  "recordCount": 34634,
+  "labeledCount": 0,
+  "reviewedCount": 0,
+  "suggestedCount": 6457,
+  "needsReviewCount": 6457,
+  "unknownFlagCount": 0,
+  "reviewedUnknownFlagCount": 0,
+  "suggestedUnknownFlagCount": 269,
   "stateCounts": {
-    "inrun": 3159,
-    "other": 12,
-    "precheck": 3312
+    "inrun": 17045,
+    "other": 65,
+    "precheck": 17524
   },
-  "labelCounts": {
-    "unknown": 7268,
-    "agent_nicole": 6286,
+  "labelCounts": {},
+  "reviewedLabelCounts": {},
+  "suggestedLabelCounts": {
+    "unknown": 7237,
+    "agent_nicole": 6276,
     "agent_lycaon": 1299,
     "agent_vivian": 4112,
-    "agent_anby": 448
+    "agent_anby": 447
   },
   "interAnnotatorAgreement": null,
   "agreementComparedSlots": 0,
-  "generatedAt": "2026-03-05T04:32:08Z"
+  "generatedAt": "2026-03-05T19:08:18Z"
 }

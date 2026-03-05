@@ -8,7 +8,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_anby"
   },
   {
     "sourceId": "cv_pool_002",
@@ -19,7 +20,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_nicole"
   },
   {
     "sourceId": "cv_pool_003",
@@ -30,7 +32,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_ben"
   },
   {
     "sourceId": "cv_pool_004",
@@ -41,7 +44,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_caesar"
   },
   {
     "sourceId": "cv_pool_005",
@@ -52,7 +56,8 @@
     "resolution": "unknown",
     "gamePatch": "unknown",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_aria"
   },
   {
     "sourceId": "cv_pool_006",
@@ -63,7 +68,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_jane_doe"
   },
   {
     "sourceId": "cv_pool_007",
@@ -74,7 +80,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_soukaku"
   },
   {
     "sourceId": "cv_pool_008",
@@ -85,7 +92,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_alice"
   },
   {
     "sourceId": "cv_pool_009",
@@ -96,7 +104,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_jane_doe"
   },
   {
     "sourceId": "cv_pool_010",
@@ -107,7 +116,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_ben"
   },
   {
     "sourceId": "cv_pool_011",
@@ -118,7 +128,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_alice"
   },
   {
     "sourceId": "cv_pool_012",
@@ -129,7 +140,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_billy"
   },
   {
     "sourceId": "cv_pool_013",
@@ -140,7 +152,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_soukaku"
   },
   {
     "sourceId": "cv_pool_014",
@@ -151,7 +164,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_ellen"
   },
   {
     "sourceId": "cv_pool_015",
@@ -162,7 +176,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_burnice"
   },
   {
     "sourceId": "cv_pool_016",
@@ -173,7 +188,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_koleda"
   },
   {
     "sourceId": "cv_pool_017",
@@ -184,7 +200,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_koleda"
   },
   {
     "sourceId": "cv_pool_018",
@@ -195,7 +212,8 @@
     "resolution": "unknown",
     "gamePatch": "2.7",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_burnice"
   },
   {
     "sourceId": "cv_pool_019",
@@ -206,7 +224,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_lycaon"
   },
   {
     "sourceId": "cv_pool_020",
@@ -217,7 +236,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_yanagi"
   },
   {
     "sourceId": "cv_pool_021",
@@ -228,7 +248,8 @@
     "resolution": "unknown",
     "gamePatch": "2.7",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_aria"
   },
   {
     "sourceId": "cv_pool_022",
@@ -239,7 +260,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_lycaon"
   },
   {
     "sourceId": "cv_pool_023",
@@ -250,7 +272,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_miyabi"
   },
   {
     "sourceId": "cv_pool_024",
@@ -261,7 +284,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_miyabi"
   },
   {
     "sourceId": "cv_pool_025",
@@ -272,7 +296,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_billy"
   },
   {
     "sourceId": "cv_pool_026",
@@ -283,7 +308,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_sunna"
   },
   {
     "sourceId": "cv_pool_027",
@@ -294,7 +320,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_zhu_yuan"
   },
   {
     "sourceId": "cv_pool_028",
@@ -305,7 +332,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_grace"
   },
   {
     "sourceId": "cv_pool_029",
@@ -316,7 +344,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_harumasa"
   },
   {
     "sourceId": "cv_pool_030",
@@ -327,7 +356,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_harumasa"
   },
   {
     "sourceId": "cv_pool_031",
@@ -338,7 +368,8 @@
     "resolution": "unknown",
     "gamePatch": "54.8",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_corin"
   },
   {
     "sourceId": "cv_pool_032",
@@ -349,7 +380,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_piper"
   },
   {
     "sourceId": "cv_pool_033",
@@ -360,7 +392,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_ellen"
   },
   {
     "sourceId": "cv_pool_034",
@@ -371,7 +404,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_soldier_11"
   },
   {
     "sourceId": "cv_pool_035",
@@ -382,7 +416,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_yanagi"
   },
   {
     "sourceId": "cv_pool_036",
@@ -393,7 +428,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_grace"
   },
   {
     "sourceId": "cv_pool_037",
@@ -404,7 +440,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_rina"
   },
   {
     "sourceId": "cv_pool_038",
@@ -415,7 +452,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_zhu_yuan"
   },
   {
     "sourceId": "cv_pool_039",
@@ -426,7 +464,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_anton"
   },
   {
     "sourceId": "cv_pool_040",
@@ -437,7 +476,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_vivian"
   },
   {
     "sourceId": "cv_pool_041",
@@ -448,7 +488,8 @@
     "resolution": "unknown",
     "gamePatch": "2.6",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_sunna"
   },
   {
     "sourceId": "cv_pool_042",
@@ -459,7 +500,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_corin"
   },
   {
     "sourceId": "cv_pool_043",
@@ -470,7 +512,8 @@
     "resolution": "unknown",
     "gamePatch": "2.4",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_lighter"
   },
   {
     "sourceId": "cv_pool_044",
@@ -481,7 +524,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_rina"
   },
   {
     "sourceId": "cv_pool_045",
@@ -492,7 +536,8 @@
     "resolution": "unknown",
     "gamePatch": "2.4",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_seth"
   },
   {
     "sourceId": "cv_pool_046",
@@ -503,7 +548,8 @@
     "resolution": "unknown",
     "gamePatch": "2.4",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_piper"
   },
   {
     "sourceId": "cv_pool_047",
@@ -514,7 +560,8 @@
     "resolution": "unknown",
     "gamePatch": "2.5",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_seth"
   },
   {
     "sourceId": "cv_pool_048",
@@ -525,7 +572,8 @@
     "resolution": "unknown",
     "gamePatch": "2.4",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_vivian"
   },
   {
     "sourceId": "cv_pool_049",
@@ -536,7 +584,8 @@
     "resolution": "unknown",
     "gamePatch": "2.4",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_hugo"
   },
   {
     "sourceId": "cv_pool_050",
@@ -547,7 +596,8 @@
     "resolution": "unknown",
     "gamePatch": "2.4",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_hugo"
   },
   {
     "sourceId": "cv_pool_051",
@@ -558,7 +608,8 @@
     "resolution": "unknown",
     "gamePatch": "2.4",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_lighter"
   },
   {
     "sourceId": "cv_pool_052",
@@ -569,7 +620,8 @@
     "resolution": "unknown",
     "gamePatch": "2.3",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_qingyi"
   },
   {
     "sourceId": "cv_pool_053",
@@ -580,6 +632,7 @@
     "resolution": "unknown",
     "gamePatch": "2.3",
     "collector": "public-web-auto-diverse",
-    "sourceType": "public"
+    "sourceType": "public",
+    "focusAgentId": "agent_anton"
   }
 ]

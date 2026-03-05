@@ -9,7 +9,10 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
-from manifest_lib import ensure_manifest_defaults, hash_file_sha256, load_manifest, save_manifest, source_exists, utc_now
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from manifest_lib import ensure_manifest_defaults, hash_file_sha256, load_manifest, save_manifest, utc_now
+from roster_taxonomy import source_focus_agent_ids
 
 VIDEO_EXTENSIONS = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".m4v"}
 
@@ -175,6 +178,42 @@ def _append_record(manifest: Dict[str, Any], source_id: str, path: Path, resolut
     )
 
 
+def _build_source_payload(source: Dict[str, Any], source_id: str, url: str) -> Dict[str, Any]:
+    focus_ids = source_focus_agent_ids(source)
+    payload = {
+        "sourceId": source_id,
+        "url": url,
+        "captureDate": str(source.get("captureDate") or utc_now()),
+        "licenseNote": str(source.get("licenseNote") or "unspecified"),
+        "locale": str(source.get("locale") or "unknown"),
+        "resolution": str(source.get("resolution") or "unknown"),
+        "gamePatch": str(source.get("gamePatch") or "unknown"),
+        "collector": str(source.get("collector") or "unknown"),
+        "sourceType": str(source.get("sourceType") or "public"),
+    }
+    if focus_ids:
+        payload["focusAgentId"] = focus_ids[0]
+        if len(focus_ids) > 1:
+            payload["focusAgentIds"] = focus_ids
+    tags = source.get("sourceTags")
+    if isinstance(tags, list):
+        payload["sourceTags"] = [str(item).strip() for item in tags if str(item).strip()]
+    return payload
+
+
+def _upsert_source(manifest: Dict[str, Any], source_payload: Dict[str, Any]) -> None:
+    sources = manifest.setdefault("sources", [])
+    source_id = str(source_payload.get("sourceId") or "")
+    for existing in sources:
+        if not isinstance(existing, dict):
+            continue
+        if str(existing.get("sourceId") or "") != source_id:
+            continue
+        existing.update(source_payload)
+        return
+    sources.append(source_payload)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Ingest public media sources and persist provenance in CV manifest.")
     parser.add_argument("--manifest", default="dataset_manifest.json")
@@ -205,20 +244,8 @@ def main() -> int:
             summary["errors"].append({"sourceId": source_id, "error": "missing url/path"})
             continue
 
-        source_payload = {
-            "sourceId": source_id,
-            "url": url,
-            "captureDate": str(source.get("captureDate") or utc_now()),
-            "licenseNote": str(source.get("licenseNote") or "unspecified"),
-            "locale": str(source.get("locale") or "unknown"),
-            "resolution": str(source.get("resolution") or "unknown"),
-            "gamePatch": str(source.get("gamePatch") or "unknown"),
-            "collector": str(source.get("collector") or "unknown"),
-            "sourceType": str(source.get("sourceType") or "public"),
-        }
-
-        if not source_exists(manifest.get("sources", []), source_id):
-            manifest.setdefault("sources", []).append(source_payload)
+        source_payload = _build_source_payload(source=source, source_id=source_id, url=url)
+        _upsert_source(manifest, source_payload)
         summary["sources"] += 1
 
         if args.skip_download:
