@@ -45,12 +45,60 @@ def render_icon(label: str) -> np.ndarray:
     return np.clip(img.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
 
-def train_model(output_dir: Path) -> Dict[str, float]:
+def _load_background_images(background_dir: Path | None) -> list[np.ndarray]:
+    if background_dir is None or not background_dir.exists():
+        return []
+    images: list[np.ndarray] = []
+    for pattern in ("*.png", "*.jpg", "*.jpeg", "*.bmp", "*.webp"):
+        for path in background_dir.rglob(pattern):
+            image = cv2.imread(str(path), cv2.IMREAD_COLOR)
+            if image is None or image.size == 0:
+                continue
+            images.append(image)
+    return images
+
+
+def _sample_background_patch(backgrounds: list[np.ndarray], width: int, height: int) -> np.ndarray | None:
+    if not backgrounds:
+        return None
+    source = backgrounds[int(RNG.integers(0, len(backgrounds)))]
+    h, w = source.shape[:2]
+    if h < height or w < width:
+        return cv2.resize(source, (width, height), interpolation=cv2.INTER_AREA)
+    y = int(RNG.integers(0, h - height + 1))
+    x = int(RNG.integers(0, w - width + 1))
+    return source[y : y + height, x : x + width]
+
+
+def _compose_with_background(icon: np.ndarray, backgrounds: list[np.ndarray]) -> np.ndarray:
+    background = _sample_background_patch(backgrounds, width=icon.shape[1], height=icon.shape[0])
+    if background is None:
+        return icon
+
+    alpha = float(RNG.uniform(0.5, 0.75))
+    mixed = cv2.addWeighted(icon, alpha, background, 1.0 - alpha, 0)
+    if RNG.random() < 0.35:
+        kernel = int(RNG.choice([3, 5]))
+        mixed = cv2.GaussianBlur(mixed, (kernel, kernel), 0)
+    if RNG.random() < 0.5:
+        beta = int(RNG.integers(-18, 19))
+        mixed = cv2.convertScaleAbs(mixed, alpha=float(RNG.uniform(0.92, 1.08)), beta=beta)
+    return mixed
+
+
+def train_model(
+    output_dir: Path,
+    background_dir: Path | None = None,
+    samples_per_class: int = 1200,
+) -> Dict[str, float]:
+    backgrounds = _load_background_images(background_dir)
     features: list[np.ndarray] = []
     labels: list[int] = []
     for idx, label in enumerate(AGENT_LABELS):
-        for _ in range(1000):
+        for _ in range(samples_per_class):
             icon = render_icon(label)
+            if backgrounds and RNG.random() < 0.8:
+                icon = _compose_with_background(icon, backgrounds)
             features.append(icon.astype(np.float32).reshape(-1) / 255.0)
             labels.append(idx)
     x = np.vstack(features).astype(np.float32)
@@ -74,7 +122,11 @@ def train_model(output_dir: Path) -> Dict[str, float]:
         json.dump({"labels": AGENT_LABELS}, fh, ensure_ascii=True, indent=2)
         fh.write("\n")
 
-    return {"accuracy": accuracy}
+    return {
+        "accuracy": accuracy,
+        "samplesPerClass": samples_per_class,
+        "backgroundCount": len(backgrounds),
+    }
 
 
 def export_templates(templates_dir: Path) -> None:
@@ -89,13 +141,22 @@ def main() -> int:
     parser.add_argument("--output-dir", default="models")
     parser.add_argument("--templates-dir", default="assets/templates")
     parser.add_argument("--metrics-file", default="docs/model_metrics.json")
+    parser.add_argument("--background-dir", default="", help="Optional private local background image directory.")
+    parser.add_argument("--samples-per-class", type=int, default=1200)
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     templates_dir = Path(args.templates_dir).resolve()
+    background_dir = Path(args.background_dir).resolve() if args.background_dir else None
 
-    metrics = {"cv_agent_icon_model": train_model(output_dir)}
+    metrics = {
+        "cv_agent_icon_model": train_model(
+            output_dir=output_dir,
+            background_dir=background_dir,
+            samples_per_class=max(200, args.samples_per_class),
+        )
+    }
     export_templates(templates_dir)
 
     metrics_path = Path(args.metrics_file).resolve()

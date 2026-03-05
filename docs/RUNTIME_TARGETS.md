@@ -23,6 +23,7 @@
   - `models/cv_agent_icon.onnx`
   - `models/cv_agent_icon.labels.json`
   - `assets/templates/*.png`
+- Training script accepts private background frames (`--background-dir`) for domain adaptation to live UI.
 - `runtime/matcher.py` combines ONNX probabilities with template matching and temporal smoothing.
 - `scripts/benchmark_runtime.py` provides latency percentile benchmark.
 

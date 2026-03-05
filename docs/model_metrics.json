@@ -1,5 +1,7 @@
 {
   "cv_agent_icon_model": {
-    "accuracy": 1.0
+    "accuracy": 0.999537037037037,
+    "samplesPerClass": 1800,
+    "backgroundCount": 240
   }
 }

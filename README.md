@@ -49,6 +49,12 @@ pip install -r requirements.txt
 python scripts/train_synthetic_cv_model.py --output-dir models --templates-dir assets/templates --metrics-file docs/model_metrics.json
 ```
 
+Domain-adaptive training with private live backgrounds:
+
+```powershell
+python scripts/train_synthetic_cv_model.py --output-dir models --templates-dir assets/templates --metrics-file docs/model_metrics.json --background-dir D:\IKA_DATA\ika_live_backgrounds\cv --samples-per-class 1600
+```
+
 Benchmark runtime:
 
 ```powershell
