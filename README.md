@@ -76,6 +76,7 @@ python scripts/extract_frames.py --manifest dataset_manifest.json --state preche
 python scripts/extract_frames.py --manifest dataset_manifest.json --state inrun --fps 0.5
 python scripts/deduplicate_frames.py --manifest dataset_manifest.json --input-dir D:\IKA_DATA\cv\frames_precheck
 python scripts/session_capture.py --manifest dataset_manifest.json --mode cv --duration-sec 180 --fps 1.0 --state inrun --locale RU --resolution 1080p
+python scripts/prune_manifest.py --manifest dataset_manifest.json --drop-source live_session_1772675681 --drop-source live_session_1772677183
 python scripts/prelabel_dataset.py --manifest dataset_manifest.json --confidence-threshold 0.7
 python scripts/qa_audit.py --manifest dataset_manifest.json --output-file docs/qa_report.json --double-review-file docs/double_review_samples.json
 python scripts/export_review_pack.py --manifest dataset_manifest.json --status needs_review --output-csv docs/review_queue.csv

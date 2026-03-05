@@ -103,14 +103,28 @@ def _append_record(
     )
 
 
+def _source_index(manifest: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    sources = manifest.get("sources", [])
+    if not isinstance(sources, list):
+        return {}
+    index: Dict[str, Dict[str, Any]] = {}
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        source_id = str(source.get("sourceId") or "").strip()
+        if source_id:
+            index[source_id] = source
+    return index
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Extract training frames from raw clips and append records to CV manifest.")
     parser.add_argument("--manifest", default="dataset_manifest.json")
     parser.add_argument("--raw-dir", default="", help="Override raw media directory.")
     parser.add_argument("--output-dir", default="", help="Override extracted frames directory.")
     parser.add_argument("--state", default="precheck", choices=["precheck", "inrun", "other"])
-    parser.add_argument("--locale", default="unknown")
-    parser.add_argument("--resolution", default="unknown")
+    parser.add_argument("--locale", default="auto", help="Record locale or 'auto' to inherit from source metadata.")
+    parser.add_argument("--resolution", default="auto", help="Record resolution or 'auto' to inherit from source metadata.")
     parser.add_argument("--fps", type=float, default=1.0)
     parser.add_argument("--max-frames-per-clip", type=int, default=400)
     parser.add_argument("--scene-aware", action="store_true", default=False)
@@ -136,10 +150,19 @@ def main() -> int:
     records = manifest.get("records", [])
     if not isinstance(records, list):
         raise ValueError("manifest.records must be an array")
+    source_index = _source_index(manifest)
 
     frame_total = 0
     processed_clips = 0
     for source_id, video_path in _iter_videos(raw_dir=raw_dir, records=records):
+        source_meta = source_index.get(source_id, {})
+        locale = str(args.locale).strip()
+        resolution = str(args.resolution).strip()
+        if not locale or locale.lower() == "auto":
+            locale = str(source_meta.get("locale") or "unknown")
+        if not resolution or resolution.lower() == "auto":
+            resolution = str(source_meta.get("resolution") or "unknown")
+
         capture = cv2.VideoCapture(str(video_path))
         if not capture.isOpened():
             continue
@@ -168,18 +191,18 @@ def main() -> int:
                 continue
 
             frame_ts_ms = float(capture.get(cv2.CAP_PROP_POS_MSEC) or 0.0)
-            file_name = f"{source_id}_{video_path.stem}_f{frame_index:06d}.jpg"
+            file_name = f"{source_id}_{video_path.stem}_{args.state}_f{frame_index:06d}.jpg"
             output_path = output_dir / file_name
             if cv2.imwrite(str(output_path), frame):
-                record_id = f"frame-{source_id}-{video_path.stem}-{frame_index:06d}"
+                record_id = f"frame-{source_id}-{video_path.stem}-{args.state}-{frame_index:06d}"
                 _append_record(
                     manifest=manifest,
                     record_id=record_id,
                     source_id=source_id,
                     output_path=output_path.resolve(),
                     state=args.state,
-                    locale=args.locale,
-                    resolution=args.resolution,
+                    locale=locale,
+                    resolution=resolution,
                     frame_ts_ms=frame_ts_ms,
                     session_id=args.session_id,
                 )
@@ -209,4 +232,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

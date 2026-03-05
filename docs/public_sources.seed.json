@@ -1,0 +1,90 @@
+[
+  {
+    "sourceId": "cv_pub_001",
+    "url": "https://youtu.be/LWt-geqQgK0",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "EN",
+    "resolution": "1080p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  },
+  {
+    "sourceId": "cv_pub_002",
+    "url": "https://youtu.be/_Ml_kaq1a7U",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "EN",
+    "resolution": "1080p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  },
+  {
+    "sourceId": "cv_pub_003",
+    "url": "https://youtu.be/a3_VxMNdy8U",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "EN",
+    "resolution": "1440p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  },
+  {
+    "sourceId": "cv_pub_004",
+    "url": "https://youtu.be/_a75O5iJfWU",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "RU",
+    "resolution": "1080p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  },
+  {
+    "sourceId": "cv_pub_005",
+    "url": "https://youtu.be/tX-fMzG5lOc",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "RU",
+    "resolution": "1080p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  },
+  {
+    "sourceId": "cv_pub_006",
+    "url": "https://youtu.be/oxuiAvYn_2U",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "EN",
+    "resolution": "1080p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  },
+  {
+    "sourceId": "cv_pub_007",
+    "url": "https://youtu.be/1YfsWfL5h2k",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "EN",
+    "resolution": "1080p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  },
+  {
+    "sourceId": "cv_pub_008",
+    "url": "https://youtu.be/4v8RVRvT1yg",
+    "captureDate": "2026-03-05",
+    "licenseNote": "public gameplay video",
+    "locale": "RU",
+    "resolution": "1440p",
+    "gamePatch": "unknown",
+    "collector": "public-web",
+    "sourceType": "public"
+  }
+]

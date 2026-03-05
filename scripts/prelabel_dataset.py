@@ -35,10 +35,26 @@ def _slot_crops(frame: np.ndarray, orientation: str, slots: int = 3) -> List[np.
 
 def _predict_slot(classifier: CvAgentClassifier, crop: np.ndarray) -> Tuple[str, float]:
     prediction = classifier.predict(crop)
-    template = template_scores(crop)
-    template_score = float(template.get(prediction.label, 0.0))
-    confidence = max(0.0, min(0.999, prediction.confidence * 0.75 + template_score * 0.25))
-    return prediction.label, confidence
+    templates = template_scores(crop)
+
+    best_template_label = ""
+    best_template_score = 0.0
+    if templates:
+        best_template_label, best_template_score = max(templates.items(), key=lambda item: item[1])
+
+    chosen_label = prediction.label
+    if best_template_label and best_template_score > max(0.58, prediction.confidence + 0.05):
+        chosen_label = best_template_label
+
+    template_score_for_chosen = float(templates.get(chosen_label, 0.0))
+    confidence = max(
+        0.0,
+        min(
+            0.999,
+            prediction.confidence * 0.55 + template_score_for_chosen * 0.45,
+        ),
+    )
+    return chosen_label, confidence
 
 
 def _has_labels(record: Dict[str, Any]) -> bool:
@@ -70,7 +86,7 @@ def _prelabel_record(
         "occlusion": "unknown",
         "ui_variant": str(record.get("uiVariant") or "default"),
         "unknown_flag": False,
-        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelVersion": "cv-prelabel-v2",
         "prelabelAt": utc_now(),
     }
     conf_map: Dict[str, float] = {}

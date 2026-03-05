@@ -101,14 +101,24 @@ def _download_with_ytdlp(url: str, target_dir: Path, source_id: str, max_items: 
     if max_items > 0:
         command.extend(["--max-downloads", str(max_items)])
     code, output = _run_command(command)
-    if code != 0:
+    if code not in (0, 101):
         raise RuntimeError(f"yt-dlp failed ({code}): {output.strip()[:3000]}")
     downloaded = [
         path
         for path in target_dir.rglob("*")
         if path.is_file() and path.resolve() not in existing and path.suffix.lower() in VIDEO_EXTENSIONS
     ]
-    return downloaded
+    if downloaded:
+        return downloaded
+    fallback = [
+        path
+        for path in target_dir.rglob("*")
+        if path.is_file() and path.suffix.lower() in VIDEO_EXTENSIONS
+    ]
+    fallback.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    if max_items > 0:
+        return fallback[:max_items]
+    return fallback
 
 
 def _normalize_with_ffmpeg(input_path: Path, overwrite: bool) -> Path:

@@ -171,25 +171,42 @@ def _latency_stats(clf: LogisticRegression, sample: np.ndarray, iterations: int 
     return round(p50, 3), round(p95, 3)
 
 
+def _stratify_target(y: np.ndarray) -> np.ndarray | None:
+    if y.size <= 1:
+        return None
+    values, counts = np.unique(y, return_counts=True)
+    if values.size <= 1:
+        return None
+    if int(np.min(counts)) < 2:
+        return None
+    return y
+
+
 def _train_real_model(
     x: np.ndarray,
     y: np.ndarray,
     label_names: List[str],
     output_dir: Path,
 ) -> Dict[str, float]:
+    if x.shape[0] < 10:
+        raise ValueError("Not enough samples for real training.")
+
+    values, counts = np.unique(y, return_counts=True)
+    if values.size < 2:
+        raise ValueError("Need at least two classes for real training.")
     x_train, x_temp, y_train, y_temp = train_test_split(
         x,
         y,
         test_size=0.2,
         random_state=42,
-        stratify=y,
+        stratify=_stratify_target(y),
     )
     x_val, x_test, y_val, y_test = train_test_split(
         x_temp,
         y_temp,
         test_size=0.5,
         random_state=42,
-        stratify=y_temp,
+        stratify=_stratify_target(y_temp),
     )
 
     clf = LogisticRegression(max_iter=1000, solver="lbfgs")
@@ -206,12 +223,13 @@ def _train_real_model(
 
     model_path = output_dir / "cv_agent_icon.onnx"
     labels_path = output_dir / "cv_agent_icon.labels.json"
+    model_label_names = [label_names[int(class_index)] for class_index in clf.classes_]
     initial_type = [("input", FloatTensorType([None, x.shape[1]]))]
     onnx_model = convert_sklearn(clf, initial_types=initial_type, target_opset=17)
     with model_path.open("wb") as fh:
         fh.write(onnx_model.SerializeToString())
     with labels_path.open("w", encoding="utf-8") as fh:
-        json.dump({"labels": label_names}, fh, ensure_ascii=True, indent=2)
+        json.dump({"labels": model_label_names}, fh, ensure_ascii=True, indent=2)
         fh.write("\n")
 
     return {
@@ -250,7 +268,26 @@ def main() -> int:
     trained_with_real = x.shape[0] >= max(20, args.min_real_samples) and len(labels) >= 2
 
     if trained_with_real:
-        metrics = _train_real_model(x=x, y=y, label_names=labels, output_dir=output_dir)
+        try:
+            metrics = _train_real_model(x=x, y=y, label_names=labels, output_dir=output_dir)
+        except Exception:
+            trained_with_real = False
+            background_dir = Path(args.background_dir).resolve() if args.background_dir else None
+            fallback = train_synthetic_model(
+                output_dir=output_dir,
+                background_dir=background_dir,
+                samples_per_class=max(200, args.samples_per_class),
+            )
+            metrics = {
+                "accuracy": float(fallback.get("accuracy", 0.0)),
+                "macroF1": float(fallback.get("accuracy", 0.0)),
+                "precision": float(fallback.get("accuracy", 0.0)),
+                "recall": float(fallback.get("accuracy", 0.0)),
+                "ece": 0.0,
+                "latencyMsP50": 0.0,
+                "latencyMsP95": 0.0,
+                "backgroundCount": int(fallback.get("backgroundCount", 0)),
+            }
     else:
         background_dir = Path(args.background_dir).resolve() if args.background_dir else None
         fallback = train_synthetic_model(
