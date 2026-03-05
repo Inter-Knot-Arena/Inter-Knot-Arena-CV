@@ -16,7 +16,7 @@ See `contracts/match-cv-output.schema.json`.
 
 - `runtime/matcher.py` exposes `evaluate_detection(...)`.
 - Frame-based detection path:
-  - screenshot capture (`PIL.ImageGrab`) or `--frame-path`
+  - screenshot capture (`dxcam` DXGI first, fallback `PIL.ImageGrab`) or `--frame-path`
   - slot crops
   - ONNX icon classifier + template matching
   - temporal smoothing for in-run
@@ -63,3 +63,8 @@ python scripts/split_dataset.py --manifest dataset_manifest.json --seed 42
 ```
 
 Raw media and crops remain private/local and are not committed to git.
+
+## Fullscreen capture notes
+
+- Runtime prefers DXGI Desktop Duplication via `dxcam` (works for borderless and most fullscreen scenarios).
+- Optional: `IKA_CAPTURE_OUTPUT_IDX=1` to target a non-primary monitor.

@@ -37,3 +37,4 @@
 
 - Locale: RU, EN.
 - Resolutions: 1080p, 1440p.
+- Capture: DXGI (`dxcam`) first, PIL fallback.

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import os
+import threading
 import time
 from collections import Counter
 from pathlib import Path
@@ -12,10 +14,18 @@ from PIL import ImageGrab
 
 from .model_runtime import CvAgentClassifier, template_scores
 
+try:
+    import dxcam  # type: ignore
+except Exception:  # pragma: no cover - optional dependency
+    dxcam = None
+
 SUPPORTED_LOCALES = {"RU", "EN"}
 SUPPORTED_RESOLUTIONS = {"1080p", "1440p"}
 SUPPORTED_MODES = {"PRECHECK", "INRUN"}
 DEFAULT_MODEL_VERSION = "cv-onnx-template-v1.2"
+
+_DXCAM_LOCK = threading.Lock()
+_DXCAM_CAMERA = None
 
 
 def _normalize(value: str) -> str:
@@ -58,6 +68,61 @@ def _build_frame_hash(
 
 
 def _capture_frame(region: Tuple[int, int, int, int] | None) -> np.ndarray | None:
+    frame = _capture_frame_dxgi(region)
+    if frame is not None:
+        return frame
+    return _capture_frame_pil(region)
+
+
+def _capture_frame_dxgi(region: Tuple[int, int, int, int] | None) -> np.ndarray | None:
+    if dxcam is None:
+        return None
+
+    camera = _get_dxcam_camera()
+    if camera is None:
+        return None
+
+    capture_region = None
+    if region:
+        x, y, w, h = region
+        capture_region = (x, y, x + w, y + h)
+
+    try:
+        frame = camera.grab(region=capture_region)
+        if frame is None:
+            return None
+        if frame.ndim == 3 and frame.shape[2] == 4:
+            return cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
+        return frame
+    except Exception:
+        return None
+
+
+def _get_dxcam_camera():
+    global _DXCAM_CAMERA
+    if _DXCAM_CAMERA is not None:
+        return _DXCAM_CAMERA
+
+    with _DXCAM_LOCK:
+        if _DXCAM_CAMERA is not None:
+            return _DXCAM_CAMERA
+        if dxcam is None:
+            return None
+
+        monitor_idx_raw = os.getenv("IKA_CAPTURE_OUTPUT_IDX", "0")
+        try:
+            monitor_idx = max(0, int(monitor_idx_raw))
+        except Exception:
+            monitor_idx = 0
+
+        try:
+            _DXCAM_CAMERA = dxcam.create(output_idx=monitor_idx, output_color="BGR")
+        except Exception:
+            _DXCAM_CAMERA = None
+        return _DXCAM_CAMERA
+
+
+def _capture_frame_pil(region: Tuple[int, int, int, int] | None) -> np.ndarray | None:
     try:
         bbox = None
         if region:
