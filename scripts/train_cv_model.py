@@ -26,17 +26,30 @@ def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
+def _is_valid_agent_label(label: str) -> bool:
+    value = str(label or "").strip()
+    if not value:
+        return False
+    if value == "unknown":
+        return True
+    return value.startswith("agent_")
+
+
 def _extract_label(record: Dict[str, Any]) -> str:
     labels = record.get("labels")
     if isinstance(labels, dict):
         for key in ("agentId", "slot_1_agent", "label"):
-            value = labels.get(key)
-            if isinstance(value, str) and value.strip():
-                return value.strip()
+                value = labels.get(key)
+                if isinstance(value, str) and value.strip():
+                    candidate = value.strip()
+                    if _is_valid_agent_label(candidate):
+                        return candidate
     for key in ("agentId", "label"):
         value = record.get(key)
         if isinstance(value, str) and value.strip():
-            return value.strip()
+            candidate = value.strip()
+            if _is_valid_agent_label(candidate):
+                return candidate
     unknown_flag = record.get("unknownFlag")
     if unknown_flag is True:
         return "unknown"
@@ -70,7 +83,9 @@ def _extract_slot_labels(record: Dict[str, Any]) -> List[Tuple[int, str]]:
         key = f"slot_{idx}_agent"
         value = labels.get(key)
         if isinstance(value, str) and value.strip():
-            slot_labels.append((idx - 1, value.strip()))
+            candidate = value.strip()
+            if _is_valid_agent_label(candidate):
+                slot_labels.append((idx - 1, candidate))
     return slot_labels
 
 
@@ -229,7 +244,7 @@ def _train_real_model(
     with model_path.open("wb") as fh:
         fh.write(onnx_model.SerializeToString())
     with labels_path.open("w", encoding="utf-8") as fh:
-        json.dump({"labels": model_label_names}, fh, ensure_ascii=True, indent=2)
+        json.dump({"labels": model_label_names, "classIds": [int(class_index) for class_index in clf.classes_]}, fh, ensure_ascii=True, indent=2)
         fh.write("\n")
 
     return {

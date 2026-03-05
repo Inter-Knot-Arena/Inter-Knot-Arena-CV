@@ -15,6 +15,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from runtime.model_runtime import CvAgentClassifier, template_scores
 
 
+def _normalize_agent_label(label: str) -> str:
+    value = str(label or "").strip()
+    if value == "unknown":
+        return "unknown"
+    if value.startswith("agent_"):
+        return value
+    return "unknown"
+
+
 def _slot_crops(frame: np.ndarray, orientation: str, slots: int = 3) -> List[np.ndarray]:
     h, w = frame.shape[:2]
     crops: List[np.ndarray] = []
@@ -42,9 +51,9 @@ def _predict_slot(classifier: CvAgentClassifier, crop: np.ndarray) -> Tuple[str,
     if templates:
         best_template_label, best_template_score = max(templates.items(), key=lambda item: item[1])
 
-    chosen_label = prediction.label
+    chosen_label = _normalize_agent_label(prediction.label)
     if best_template_label and best_template_score > max(0.58, prediction.confidence + 0.05):
-        chosen_label = best_template_label
+        chosen_label = _normalize_agent_label(best_template_label)
 
     template_score_for_chosen = float(templates.get(chosen_label, 0.0))
     confidence = max(

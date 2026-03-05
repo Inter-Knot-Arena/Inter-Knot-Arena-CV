@@ -22,13 +22,20 @@ def _provider_priority() -> list[str]:
     return [provider for provider in preferred if provider in available] or ["CPUExecutionProvider"]
 
 
-def _read_labels(path: Path) -> list[str]:
+def _read_labels(path: Path) -> tuple[list[str], Dict[int, str]]:
     with path.open("r", encoding="utf-8") as fh:
         payload = json.load(fh)
     labels = payload.get("labels")
     if not isinstance(labels, list) or not labels:
         raise ValueError(f"Invalid labels file: {path}")
-    return [str(item) for item in labels]
+    normalized_labels = [str(item) for item in labels]
+    class_ids_raw = payload.get("classIds")
+    class_id_map: Dict[int, str] = {}
+    if isinstance(class_ids_raw, list) and len(class_ids_raw) == len(normalized_labels):
+        for class_id_value, label in zip(class_ids_raw, normalized_labels):
+            if isinstance(class_id_value, (int, np.integer)):
+                class_id_map[int(class_id_value)] = label
+    return normalized_labels, class_id_map
 
 
 def get_model_metadata(default_version: str) -> Dict[str, str]:
@@ -46,11 +53,11 @@ def get_model_metadata(default_version: str) -> Dict[str, str]:
         return {"modelVersion": default_version, "dataVersion": "unknown"}
 
 
-def _extract_probabilities(raw_output: object, labels: Sequence[str]) -> Dict[str, float]:
+def _extract_probabilities(raw_output: object, labels: Sequence[str], class_id_map: Dict[int, str]) -> Dict[str, float]:
     if isinstance(raw_output, list) and raw_output and isinstance(raw_output[0], dict):
         probabilities: Dict[str, float] = {}
         for key, value in raw_output[0].items():
-            label = _map_label_key(key, labels)
+            label = _map_label_key(key, labels, class_id_map)
             probabilities[label] = float(value)
         return probabilities
 
@@ -87,9 +94,12 @@ def _probability_quality(probabilities: Dict[str, float]) -> tuple[int, int, flo
     return (len(values), in_unit_range, value_sum, peak)
 
 
-def _map_label_key(raw: object, labels: Sequence[str]) -> str:
+def _map_label_key(raw: object, labels: Sequence[str], class_id_map: Dict[int, str]) -> str:
     if isinstance(raw, (np.integer, int)):
         idx = int(raw)
+        mapped = class_id_map.get(idx)
+        if mapped:
+            return mapped
         if 0 <= idx < len(labels):
             return labels[idx]
         return str(idx)
@@ -100,6 +110,9 @@ def _map_label_key(raw: object, labels: Sequence[str]) -> str:
     text = str(raw).strip()
     if text.isdigit():
         idx = int(text)
+        mapped = class_id_map.get(idx)
+        if mapped:
+            return mapped
         if 0 <= idx < len(labels):
             return labels[idx]
     return text
@@ -123,7 +136,7 @@ class CvAgentClassifier:
             raise FileNotFoundError(f"CV model missing: {self.model_path}")
         if not self.labels_path.exists():
             raise FileNotFoundError(f"CV labels missing: {self.labels_path}")
-        self.labels = _read_labels(self.labels_path)
+        self.labels, self.class_id_map = _read_labels(self.labels_path)
         self.session = ort.InferenceSession(str(self.model_path), providers=_provider_priority())
         self.input_name = self.session.get_inputs()[0].name
         self.output_names = [output.name for output in self.session.get_outputs()]
@@ -152,11 +165,11 @@ class CvAgentClassifier:
         for output in outputs:
             if label is None:
                 if isinstance(output, np.ndarray) and output.size > 0:
-                    label = _map_label_key(output[0], self.labels)
+                    label = _map_label_key(output[0], self.labels, self.class_id_map)
                 elif isinstance(output, list) and output:
-                    label = _map_label_key(output[0], self.labels)
+                    label = _map_label_key(output[0], self.labels, self.class_id_map)
 
-            candidate = _extract_probabilities(output, self.labels)
+            candidate = _extract_probabilities(output, self.labels, self.class_id_map)
             if candidate:
                 probability_candidates.append(candidate)
 
