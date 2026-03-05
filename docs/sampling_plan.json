@@ -1,25 +1,31 @@
 {
-  "recordCount": 14,
+  "recordCount": 74,
   "agentCounts": {
-    "unknown": 14
+    "agent_anby": 44,
+    "agent_vivian": 30
   },
-  "unknownCount": 14,
+  "unknownCount": 0,
   "localeCounts": {
-    "RU": 14
+    "RU": 74
   },
   "resolutionCounts": {
-    "1080p": 14
+    "1080p": 74
   },
   "stateCounts": {
-    "inrun": 14
+    "inrun": 44,
+    "precheck": 30
   },
   "sourceCounts": {
-    "live_session_1772675681": 14
+    "live_session_1772675681": 14,
+    "live_session_1772677147": 30,
+    "live_session_1772677183": 30
   },
   "localeResolutionCounts": {
-    "RU:1080p": 14
+    "RU:1080p": 74
   },
   "deficits": {
-    "unknown": 7986
+    "agent_anby": 5956,
+    "agent_vivian": 5970,
+    "unknown": 8000
   }
 }

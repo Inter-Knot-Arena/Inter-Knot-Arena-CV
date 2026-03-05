@@ -4,14 +4,14 @@
     "macroF1": 1.0,
     "precision": 1.0,
     "recall": 1.0,
-    "ece": 0.0,
-    "latencyMsP50": 0.0,
-    "latencyMsP95": 0.0,
+    "ece": 0.006720329014210824,
+    "latencyMsP50": 0.081,
+    "latencyMsP95": 0.12,
     "backgroundCount": 0,
     "dataVersion": "1.1.0",
-    "trainedAt": "2026-03-05T01:44:43Z",
-    "recordCount": 0,
+    "trainedAt": "2026-03-05T02:22:45Z",
+    "recordCount": 74,
     "skippedRecords": 0,
-    "mode": "synthetic_fallback"
+    "mode": "real"
   }
 }

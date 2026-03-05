@@ -1,0 +1,17 @@
+{
+  "recordCount": 74,
+  "labeledCount": 74,
+  "needsReviewCount": 0,
+  "unknownFlagCount": 0,
+  "stateCounts": {
+    "inrun": 44,
+    "precheck": 30
+  },
+  "labelCounts": {
+    "agent_anby": 144,
+    "agent_vivian": 78
+  },
+  "interAnnotatorAgreement": null,
+  "agreementComparedSlots": 0,
+  "generatedAt": "2026-03-05T02:21:35Z"
+}

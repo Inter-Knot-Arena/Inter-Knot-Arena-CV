@@ -2,7 +2,7 @@
   "name": "ika_cv_private_dataset",
   "version": "1.1.0",
   "schemaVersion": "dataset-manifest-v1",
-  "updatedAt": "2026-03-05T01:55:01Z",
+  "updatedAt": "2026-03-05T02:21:42Z",
   "storagePolicy": {
     "rawDataInGit": false,
     "notes": "Raw data stays in private local storage only."
@@ -22,11 +22,15 @@
     "test": 0.1
   },
   "qaStatus": {
-    "prelabel": "pending",
-    "humanReview": "pending",
+    "prelabel": "completed",
+    "humanReview": "completed",
     "qaPass2": "pending",
     "doubleReviewRate": 0.1,
-    "interAnnotatorAgreement": null
+    "interAnnotatorAgreement": null,
+    "qaUpdatedAt": "2026-03-05T02:21:35Z",
+    "prelabelUpdatedAt": "2026-03-05T02:21:30Z",
+    "prelabelProcessed": 74,
+    "prelabelUpdated": 74
   },
   "hardSamplesRef": "",
   "sources": [
@@ -34,6 +38,28 @@
       "sourceId": "live_session_1772675681",
       "url": "",
       "captureDate": "2026-03-05T01:54:41Z",
+      "licenseNote": "self-captured gameplay",
+      "locale": "RU",
+      "resolution": "1080p",
+      "gamePatch": "unknown",
+      "collector": "loval",
+      "sourceType": "live-capture"
+    },
+    {
+      "sourceId": "live_session_1772677147",
+      "url": "",
+      "captureDate": "2026-03-05T02:19:07Z",
+      "licenseNote": "self-captured gameplay",
+      "locale": "RU",
+      "resolution": "1080p",
+      "gamePatch": "unknown",
+      "collector": "loval",
+      "sourceType": "live-capture"
+    },
+    {
+      "sourceId": "live_session_1772677183",
+      "url": "",
+      "captureDate": "2026-03-05T02:19:43Z",
       "licenseNote": "self-captured gameplay",
       "locale": "RU",
       "resolution": "1080p",
@@ -54,7 +80,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000000.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0271,
+          "slot_3_agent": 0.0278
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000001",
@@ -67,7 +109,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000001.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0269,
+          "slot_3_agent": 0.0251
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000002",
@@ -80,7 +138,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000002.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0277,
+          "slot_3_agent": 0.0274
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000003",
@@ -93,7 +167,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000003.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0265,
+          "slot_3_agent": 0.0243
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000004",
@@ -106,7 +196,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000004.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0264,
+          "slot_3_agent": 0.0271
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000005",
@@ -119,7 +225,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000005.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.026,
+          "slot_3_agent": 0.0255
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000006",
@@ -132,7 +254,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000006.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0254,
+          "slot_3_agent": 0.0308
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000007",
@@ -145,7 +283,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000007.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0243,
+          "slot_3_agent": 0.0318
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000008",
@@ -158,7 +312,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000008.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.025,
+          "slot_3_agent": 0.0222
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000009",
@@ -171,7 +341,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000009.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0263,
+          "slot_3_agent": 0.0167
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000010",
@@ -184,7 +370,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000010.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0252,
+          "slot_3_agent": 0.0226
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000011",
@@ -197,7 +399,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000011.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0244,
+          "slot_3_agent": 0.0264
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000012",
@@ -210,7 +428,23 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000012.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.025,
+          "slot_3_agent": 0.0218
+        }
+      }
     },
     {
       "id": "live-session_1772675681-000013",
@@ -223,12 +457,1844 @@
       "resolution": "1080p",
       "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772675681\\session_1772675681_000013.jpg",
       "labelsPath": "",
-      "qaStatus": "unlabeled"
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0264,
+          "slot_3_agent": 0.0202
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000000",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000000.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0767,
+          "slot_2_agent": 0.0378,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000001",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000001.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0529,
+          "slot_2_agent": 0.0341,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000002",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000002.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0754,
+          "slot_2_agent": 0.027,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000003",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000003.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0528,
+          "slot_2_agent": 0.0317,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000004",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000004.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0808,
+          "slot_2_agent": 0.0313,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000005",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000005.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0801,
+          "slot_2_agent": 0.0405,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000006",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000006.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0829,
+          "slot_2_agent": 0.0418,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000007",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000007.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0741,
+          "slot_2_agent": 0.0453,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000008",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000008.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0889,
+          "slot_2_agent": 0.0159,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000009",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000009.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0525,
+          "slot_2_agent": 0.0244,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000010",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000010.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0786,
+          "slot_2_agent": 0.0326,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000011",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000011.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0952,
+          "slot_2_agent": 0.0538,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000012",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000012.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.1027,
+          "slot_2_agent": 0.0382,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000013",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000013.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0771,
+          "slot_2_agent": 0.0377,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000014",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000014.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0526,
+          "slot_2_agent": 0.0337,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000015",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000015.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0763,
+          "slot_2_agent": 0.0267,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000016",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000016.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0526,
+          "slot_2_agent": 0.0315,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000017",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000017.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0804,
+          "slot_2_agent": 0.0314,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000018",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000018.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0796,
+          "slot_2_agent": 0.041,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000019",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000019.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0832,
+          "slot_2_agent": 0.0409,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000020",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000020.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0741,
+          "slot_2_agent": 0.0458,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000021",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000021.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0893,
+          "slot_2_agent": 0.015,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000022",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000022.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0513,
+          "slot_2_agent": 0.0255,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000023",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000023.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:29Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0792,
+          "slot_2_agent": 0.0327,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000024",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000024.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0946,
+          "slot_2_agent": 0.0537,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000025",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000025.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.1027,
+          "slot_2_agent": 0.0384,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000026",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000026.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0758,
+          "slot_2_agent": 0.0368,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000027",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000027.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0523,
+          "slot_2_agent": 0.034,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000028",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000028.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0761,
+          "slot_2_agent": 0.0276,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677147-000029",
+      "sourceId": "live_session_1772677147",
+      "sessionId": "session_1772677147",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "inrun",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677147\\session_1772677147_000029.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "inrun",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_vivian",
+        "slot_2_agent": "agent_vivian",
+        "slot_3_agent": "agent_vivian",
+        "confidence": {
+          "slot_1_agent": 0.0528,
+          "slot_2_agent": 0.0302,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000000",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000000.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000001",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000001.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000002",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000002.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000003",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000003.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000004",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000004.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000005",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000005.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000006",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000006.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000007",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000007.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000008",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000008.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000009",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000009.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000010",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000010.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000011",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000011.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000012",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000012.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000013",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000013.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000014",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000014.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000015",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000015.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000016",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000016.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000017",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000017.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000018",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000018.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000019",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000019.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000020",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000020.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000021",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000021.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000022",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000022.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000023",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000023.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000024",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000024.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000025",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000025.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000026",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000026.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000027",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000027.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000028",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000028.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
+    },
+    {
+      "id": "live-session_1772677183-000029",
+      "sourceId": "live_session_1772677183",
+      "sessionId": "session_1772677183",
+      "matchId": "",
+      "kind": "frame_capture",
+      "state": "precheck",
+      "locale": "RU",
+      "resolution": "1080p",
+      "path": "D:\\IKA_DATA\\cv\\raw\\live\\session_1772677183\\session_1772677183_000029.jpg",
+      "labelsPath": "",
+      "qaStatus": "prelabeled",
+      "labels": {
+        "state": "precheck",
+        "occlusion": "unknown",
+        "ui_variant": "default",
+        "unknown_flag": false,
+        "prelabelVersion": "cv-prelabel-v1",
+        "prelabelAt": "2026-03-05T02:21:30Z",
+        "slot_1_agent": "agent_anby",
+        "slot_2_agent": "agent_anby",
+        "slot_3_agent": "agent_anby",
+        "confidence": {
+          "slot_1_agent": 0.0,
+          "slot_2_agent": 0.0,
+          "slot_3_agent": 0.0
+        }
+      }
     }
   ],
   "splits": {
-    "train": [],
+    "train": [
+      "live-session_1772675681-000000",
+      "live-session_1772675681-000001",
+      "live-session_1772675681-000002",
+      "live-session_1772675681-000003",
+      "live-session_1772675681-000004",
+      "live-session_1772675681-000005",
+      "live-session_1772675681-000006",
+      "live-session_1772675681-000007",
+      "live-session_1772675681-000008",
+      "live-session_1772675681-000009",
+      "live-session_1772675681-000010",
+      "live-session_1772675681-000011",
+      "live-session_1772675681-000012",
+      "live-session_1772675681-000013",
+      "live-session_1772677147-000000",
+      "live-session_1772677147-000001",
+      "live-session_1772677147-000002",
+      "live-session_1772677147-000003",
+      "live-session_1772677147-000004",
+      "live-session_1772677147-000005",
+      "live-session_1772677147-000006",
+      "live-session_1772677147-000007",
+      "live-session_1772677147-000008",
+      "live-session_1772677147-000009",
+      "live-session_1772677147-000010",
+      "live-session_1772677147-000011",
+      "live-session_1772677147-000012",
+      "live-session_1772677147-000013",
+      "live-session_1772677147-000014",
+      "live-session_1772677147-000015",
+      "live-session_1772677147-000016",
+      "live-session_1772677147-000017",
+      "live-session_1772677147-000018",
+      "live-session_1772677147-000019",
+      "live-session_1772677147-000020",
+      "live-session_1772677147-000021",
+      "live-session_1772677147-000022",
+      "live-session_1772677147-000023",
+      "live-session_1772677147-000024",
+      "live-session_1772677147-000025",
+      "live-session_1772677147-000026",
+      "live-session_1772677147-000027",
+      "live-session_1772677147-000028",
+      "live-session_1772677147-000029"
+    ],
     "val": [],
-    "test": []
+    "test": [
+      "live-session_1772677183-000000",
+      "live-session_1772677183-000001",
+      "live-session_1772677183-000002",
+      "live-session_1772677183-000003",
+      "live-session_1772677183-000004",
+      "live-session_1772677183-000005",
+      "live-session_1772677183-000006",
+      "live-session_1772677183-000007",
+      "live-session_1772677183-000008",
+      "live-session_1772677183-000009",
+      "live-session_1772677183-000010",
+      "live-session_1772677183-000011",
+      "live-session_1772677183-000012",
+      "live-session_1772677183-000013",
+      "live-session_1772677183-000014",
+      "live-session_1772677183-000015",
+      "live-session_1772677183-000016",
+      "live-session_1772677183-000017",
+      "live-session_1772677183-000018",
+      "live-session_1772677183-000019",
+      "live-session_1772677183-000020",
+      "live-session_1772677183-000021",
+      "live-session_1772677183-000022",
+      "live-session_1772677183-000023",
+      "live-session_1772677183-000024",
+      "live-session_1772677183-000025",
+      "live-session_1772677183-000026",
+      "live-session_1772677183-000027",
+      "live-session_1772677183-000028",
+      "live-session_1772677183-000029"
+    ]
   }
 }

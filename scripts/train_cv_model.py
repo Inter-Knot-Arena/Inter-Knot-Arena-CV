@@ -143,7 +143,7 @@ def _train_real_model(
         stratify=y_temp,
     )
 
-    clf = LogisticRegression(max_iter=1000, solver="lbfgs", multi_class="auto")
+    clf = LogisticRegression(max_iter=1000, solver="lbfgs")
     clf.fit(x_train, y_train)
     preds = clf.predict(x_test)
     probs = clf.predict_proba(x_test)
@@ -198,7 +198,7 @@ def main() -> int:
     metrics_path.parent.mkdir(parents=True, exist_ok=True)
 
     x, y, labels, skipped = _load_dataset(manifest_path=manifest_path)
-    trained_with_real = x.shape[0] >= max(200, args.min_real_samples) and len(labels) >= 2
+    trained_with_real = x.shape[0] >= max(20, args.min_real_samples) and len(labels) >= 2
 
     if trained_with_real:
         metrics = _train_real_model(x=x, y=y, label_names=labels, output_dir=output_dir)
@@ -260,4 +260,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
