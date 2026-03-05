@@ -1,0 +1,25 @@
+{
+  "recordCount": 14,
+  "agentCounts": {
+    "unknown": 14
+  },
+  "unknownCount": 14,
+  "localeCounts": {
+    "RU": 14
+  },
+  "resolutionCounts": {
+    "1080p": 14
+  },
+  "stateCounts": {
+    "inrun": 14
+  },
+  "sourceCounts": {
+    "live_session_1772675681": 14
+  },
+  "localeResolutionCounts": {
+    "RU:1080p": 14
+  },
+  "deficits": {
+    "unknown": 7986
+  }
+}
