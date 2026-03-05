@@ -43,6 +43,37 @@ def _extract_label(record: Dict[str, Any]) -> str:
     return ""
 
 
+def _slot_crops(frame: np.ndarray, orientation: str, slots: int = 3) -> List[np.ndarray]:
+    h, w = frame.shape[:2]
+    crops: List[np.ndarray] = []
+    if orientation == "horizontal":
+        step = max(1, w // slots)
+        for idx in range(slots):
+            x0 = idx * step
+            x1 = w if idx == slots - 1 else min(w, (idx + 1) * step)
+            crops.append(frame[:, x0:x1])
+    else:
+        step = max(1, h // slots)
+        for idx in range(slots):
+            y0 = idx * step
+            y1 = h if idx == slots - 1 else min(h, (idx + 1) * step)
+            crops.append(frame[y0:y1, :])
+    return crops
+
+
+def _extract_slot_labels(record: Dict[str, Any]) -> List[Tuple[int, str]]:
+    labels = record.get("labels")
+    if not isinstance(labels, dict):
+        return []
+    slot_labels: List[Tuple[int, str]] = []
+    for idx in range(1, 4):
+        key = f"slot_{idx}_agent"
+        value = labels.get(key)
+        if isinstance(value, str) and value.strip():
+            slot_labels.append((idx - 1, value.strip()))
+    return slot_labels
+
+
 def _load_dataset(manifest_path: Path) -> Tuple[np.ndarray, np.ndarray, List[str], int]:
     with manifest_path.open("r", encoding="utf-8") as fh:
         manifest = json.load(fh)
@@ -73,6 +104,24 @@ def _load_dataset(manifest_path: Path) -> Tuple[np.ndarray, np.ndarray, List[str
         if image is None:
             skipped += 1
             continue
+
+        slot_labels = _extract_slot_labels(record)
+        if slot_labels:
+            state = str(record.get("state") or "other").lower()
+            orientation = "horizontal" if state == "precheck" else "vertical"
+            crops = _slot_crops(image, orientation=orientation, slots=3)
+            added = 0
+            for slot_index, slot_label in slot_labels:
+                if slot_index < 0 or slot_index >= len(crops):
+                    continue
+                crop = cv2.resize(crops[slot_index], (32, 32), interpolation=cv2.INTER_AREA)
+                features.append(crop.astype(np.float32).reshape(-1) / 255.0)
+                labels.append(slot_label)
+                added += 1
+            if added <= 0:
+                skipped += 1
+            continue
+
         image = cv2.resize(image, (32, 32), interpolation=cv2.INTER_AREA)
         features.append(image.astype(np.float32).reshape(-1) / 255.0)
         labels.append(label)

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -38,6 +40,27 @@ def _run_command(command: list[str]) -> tuple[int, str]:
     return process.returncode, process.stdout
 
 
+def _resolve_ytdlp_command() -> list[str]:
+    ytdlp = shutil.which("yt-dlp")
+    if ytdlp:
+        return [ytdlp]
+    if importlib.util.find_spec("yt_dlp") is not None:
+        return [sys.executable, "-m", "yt_dlp"]
+    raise RuntimeError("yt-dlp not found. Install via PATH or 'pip install yt-dlp'.")
+
+
+def _resolve_ffmpeg_command() -> str | None:
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg:
+        return ffmpeg
+    try:
+        import imageio_ffmpeg  # type: ignore
+
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return None
+
+
 def _copy_local_media(url_or_path: str, target_dir: Path, source_id: str) -> List[Path]:
     source_path = Path(url_or_path).expanduser()
     if not source_path.exists():
@@ -62,14 +85,11 @@ def _copy_local_media(url_or_path: str, target_dir: Path, source_id: str) -> Lis
 
 
 def _download_with_ytdlp(url: str, target_dir: Path, source_id: str, max_items: int) -> List[Path]:
-    ytdlp = shutil.which("yt-dlp")
-    if not ytdlp:
-        raise RuntimeError("yt-dlp not found in PATH")
+    ytdlp_cmd = _resolve_ytdlp_command()
     target_dir.mkdir(parents=True, exist_ok=True)
     pattern = str(target_dir / f"{source_id}_%(autonumber)03d.%(ext)s")
     existing = {path.resolve() for path in target_dir.rglob("*") if path.is_file()}
-    command = [
-        ytdlp,
+    command = ytdlp_cmd + [
         "--no-progress",
         "--no-warnings",
         "--ignore-errors",
@@ -92,7 +112,7 @@ def _download_with_ytdlp(url: str, target_dir: Path, source_id: str, max_items: 
 
 
 def _normalize_with_ffmpeg(input_path: Path, overwrite: bool) -> Path:
-    ffmpeg = shutil.which("ffmpeg")
+    ffmpeg = _resolve_ffmpeg_command()
     if not ffmpeg:
         return input_path
     normalized_path = input_path.with_name(f"{input_path.stem}_norm.mp4")
@@ -228,4 +248,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

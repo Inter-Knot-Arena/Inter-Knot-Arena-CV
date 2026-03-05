@@ -6,3 +6,5 @@ scikit-learn>=1.5.0
 skl2onnx>=1.17.0
 Pillow>=10.4.0
 dxcam>=0.0.5
+yt-dlp>=2025.1.26
+imageio-ffmpeg>=0.5.1

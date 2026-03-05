@@ -78,6 +78,9 @@ python scripts/deduplicate_frames.py --manifest dataset_manifest.json --input-di
 python scripts/session_capture.py --manifest dataset_manifest.json --mode cv --duration-sec 180 --fps 1.0 --state inrun --locale RU --resolution 1080p
 python scripts/prelabel_dataset.py --manifest dataset_manifest.json --confidence-threshold 0.7
 python scripts/qa_audit.py --manifest dataset_manifest.json --output-file docs/qa_report.json --double-review-file docs/double_review_samples.json
+python scripts/export_review_pack.py --manifest dataset_manifest.json --status needs_review --output-csv docs/review_queue.csv
+# after manual edit of docs/review_queue.csv:
+python scripts/apply_review_labels.py --manifest dataset_manifest.json --input-csv docs/review_queue.csv --review-round final --reviewer-id qa_operator_1
 python scripts/build_sampling_plan.py --manifest dataset_manifest.json --target-per-agent 6000 --target-unknown 8000 --output-file docs/sampling_plan.json
 python scripts/split_dataset.py --manifest dataset_manifest.json --seed 42
 ```
