@@ -1,17 +1,17 @@
 {
   "cv_agent_icon_model": {
-    "accuracy": 0.817258883248731,
-    "macroF1": 0.7199907076068066,
-    "precision": 0.7389230979748221,
-    "recall": 0.7097351722351722,
-    "ece": 0.6784134887767728,
-    "latencyMsP50": 0.12,
-    "latencyMsP95": 0.199,
+    "accuracy": 0.9133937562940584,
+    "macroF1": 0.8680586016099197,
+    "precision": 0.8945706007100409,
+    "recall": 0.8484145299926927,
+    "ece": 0.022059659824109137,
+    "latencyMsP50": 0.08,
+    "latencyMsP95": 0.103,
     "backgroundCount": 0,
     "dataVersion": "1.1.0",
-    "trainedAt": "2026-03-05T03:40:14Z",
-    "recordCount": 1962,
-    "skippedRecords": 8,
+    "trainedAt": "2026-03-05T04:30:21Z",
+    "recordCount": 9930,
+    "skippedRecords": 2311,
     "mode": "real"
   }
 }

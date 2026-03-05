@@ -1,6 +1,6 @@
 {
-  "version": "cv-agent-head-v1.4",
-  "sha256": "6a29b5bd9ef94d348862b8a02f1251f2e456baa090eb63914ca6ea513455ebab",
-  "trainedAt": "2026-03-05T03:40:14Z",
+  "version": "cv-agent-head-v1.5a",
+  "sha256": "699c17f6d79b5190a855fe40f8ebf51e9d5cea44da31412588597ab98cb3090f",
+  "trainedAt": "2026-03-05T04:30:21Z",
   "dataVersion": "1.1.0"
 }

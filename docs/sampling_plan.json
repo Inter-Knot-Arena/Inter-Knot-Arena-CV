@@ -1,50 +1,57 @@
 {
-  "recordCount": 662,
+  "recordCount": 6483,
   "agentCounts": {
-    "agent_vivian": 15,
-    "agent_lycaon": 236,
-    "unknown": 121,
-    "agent_koleda": 13,
-    "agent_anby": 64,
-    "agent_nicole": 213
+    "unknown": 2447,
+    "agent_nicole": 2155,
+    "agent_lycaon": 297,
+    "agent_vivian": 1396,
+    "agent_anby": 188
   },
-  "unknownCount": 406,
+  "unknownCount": 281,
   "localeCounts": {
-    "RU": 284,
-    "EN": 378
+    "RU": 30,
+    "EN": 2337,
+    "JP": 3638,
+    "unknown": 478
   },
   "resolutionCounts": {
-    "1080p": 531,
-    "1440p": 131
+    "1080p": 5231,
+    "1440p": 774,
+    "unknown": 478
   },
   "stateCounts": {
-    "inrun": 373,
-    "other": 8,
-    "precheck": 281
+    "inrun": 3159,
+    "other": 12,
+    "precheck": 3312
   },
   "sourceCounts": {
     "live_session_1772677147": 30,
-    "cv_pub_001": 12,
-    "cv_pub_002": 65,
-    "cv_pub_003": 128,
-    "cv_pub_004": 204,
-    "cv_pub_005": 81,
-    "cv_pub_006": 55,
-    "cv_pub_007": 44,
-    "cv_pub_008": 43
+    "cv_recent_001": 521,
+    "cv_recent_002": 521,
+    "cv_recent_003": 521,
+    "cv_recent_004": 519,
+    "cv_recent_005": 519,
+    "cv_recent_006": 312,
+    "cv_recent_007": 521,
+    "cv_recent_008": 519,
+    "cv_recent_009": 518,
+    "cv_recent_010": 521,
+    "cv_recent_011": 521,
+    "cv_recent_012": 462,
+    "src_unknown": 478
   },
   "localeResolutionCounts": {
-    "RU:1080p": 249,
-    "EN:1080p": 282,
-    "EN:1440p": 96,
-    "RU:1440p": 35
+    "RU:1080p": 30,
+    "EN:1080p": 1563,
+    "JP:1080p": 3638,
+    "EN:1440p": 774,
+    "unknown:unknown": 478
   },
   "deficits": {
-    "agent_anby": 5936,
-    "agent_koleda": 5987,
-    "agent_lycaon": 5764,
-    "agent_nicole": 5787,
-    "agent_vivian": 5985,
-    "unknown": 7594
+    "agent_anby": 5812,
+    "agent_lycaon": 5703,
+    "agent_nicole": 3845,
+    "agent_vivian": 4604,
+    "unknown": 7719
   }
 }

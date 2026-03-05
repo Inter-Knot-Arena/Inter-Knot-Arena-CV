@@ -1,10 +1,16 @@
 {
   "labels": [
     "agent_anby",
-    "agent_koleda",
     "agent_lycaon",
     "agent_nicole",
     "agent_vivian",
     "unknown"
+  ],
+  "classIds": [
+    0,
+    1,
+    2,
+    3,
+    4
   ]
 }
