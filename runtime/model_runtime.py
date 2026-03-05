@@ -31,7 +31,11 @@ def _read_labels(path: Path) -> list[str]:
 
 def _extract_probabilities(raw_output: object, labels: Sequence[str]) -> Dict[str, float]:
     if isinstance(raw_output, list) and raw_output and isinstance(raw_output[0], dict):
-        return {str(key): float(value) for key, value in raw_output[0].items()}
+        probabilities: Dict[str, float] = {}
+        for key, value in raw_output[0].items():
+            label = _map_label_key(key, labels)
+            probabilities[label] = float(value)
+        return probabilities
 
     if isinstance(raw_output, np.ndarray):
         array = raw_output
@@ -47,6 +51,24 @@ def _extract_probabilities(raw_output: object, labels: Sequence[str]) -> Dict[st
             if idx < probs.shape[0]
         }
     return {}
+
+
+def _map_label_key(raw: object, labels: Sequence[str]) -> str:
+    if isinstance(raw, (np.integer, int)):
+        idx = int(raw)
+        if 0 <= idx < len(labels):
+            return labels[idx]
+        return str(idx)
+
+    if isinstance(raw, (bytes, bytearray)):
+        raw = raw.decode("utf-8", errors="ignore")
+
+    text = str(raw).strip()
+    if text.isdigit():
+        idx = int(text)
+        if 0 <= idx < len(labels):
+            return labels[idx]
+    return text
 
 
 @dataclass(slots=True)
@@ -96,9 +118,9 @@ class CvAgentClassifier:
         for output in outputs:
             if label is None:
                 if isinstance(output, np.ndarray) and output.size > 0:
-                    label = str(output[0])
+                    label = _map_label_key(output[0], self.labels)
                 elif isinstance(output, list) and output:
-                    label = str(output[0])
+                    label = _map_label_key(output[0], self.labels)
             if not probabilities:
                 probabilities = _extract_probabilities(output, self.labels)
 
