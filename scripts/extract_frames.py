@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Tuple
+from typing import Any, Dict, Iterator, List, Sequence, Set, Tuple
 
 import cv2
 import numpy as np
@@ -13,17 +13,49 @@ from manifest_lib import ensure_manifest_defaults, load_manifest, save_manifest
 VIDEO_EXTENSIONS = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".m4v"}
 
 
-def _iter_videos(raw_dir: Path, records: List[Dict[str, Any]]) -> Iterator[Tuple[str, Path]]:
+def _load_source_ids(source_ids_file: str) -> Set[str]:
+    if not source_ids_file:
+        return set()
+    file_path = Path(source_ids_file).expanduser().resolve()
+    if not file_path.exists():
+        raise FileNotFoundError(f"source ids file not found: {file_path}")
+    source_ids: Set[str] = set()
+    for line in file_path.read_text(encoding="utf-8").splitlines():
+        value = line.strip()
+        if value:
+            source_ids.add(value)
+    return source_ids
+
+
+def _matches_source_filter(source_id: str, explicit_ids: Set[str], prefixes: Sequence[str]) -> bool:
+    if explicit_ids and source_id in explicit_ids:
+        return True
+    if prefixes and any(source_id.startswith(prefix) for prefix in prefixes):
+        return True
+    return not explicit_ids and not prefixes
+
+
+def _iter_videos(
+    raw_dir: Path,
+    records: List[Dict[str, Any]],
+    explicit_ids: Set[str],
+    prefixes: Sequence[str],
+) -> Iterator[Tuple[str, Path]]:
     yielded: set[Path] = set()
     for record in records:
         if str(record.get("kind")) != "raw_clip":
             continue
         source_id = str(record.get("sourceId") or "src_unknown")
+        if not _matches_source_filter(source_id=source_id, explicit_ids=explicit_ids, prefixes=prefixes):
+            continue
         path = Path(str(record.get("path") or "")).expanduser()
         if path.exists() and path.suffix.lower() in VIDEO_EXTENSIONS:
             resolved = path.resolve()
             yielded.add(resolved)
             yield source_id, resolved
+
+    if explicit_ids or prefixes:
+        return
 
     for path in raw_dir.rglob("*"):
         if path.suffix.lower() not in VIDEO_EXTENSIONS or not path.is_file():
@@ -130,6 +162,17 @@ def main() -> int:
     parser.add_argument("--scene-aware", action="store_true", default=False)
     parser.add_argument("--scene-threshold", type=float, default=0.16)
     parser.add_argument("--session-id", default="")
+    parser.add_argument(
+        "--source-id-prefix",
+        action="append",
+        default=[],
+        help="Only process sourceIds starting with this prefix. Repeatable.",
+    )
+    parser.add_argument(
+        "--source-ids-file",
+        default="",
+        help="Optional text file with one sourceId per line to process.",
+    )
     args = parser.parse_args()
 
     manifest_path = Path(args.manifest).resolve()
@@ -151,10 +194,17 @@ def main() -> int:
     if not isinstance(records, list):
         raise ValueError("manifest.records must be an array")
     source_index = _source_index(manifest)
+    source_id_prefixes = [str(prefix).strip() for prefix in args.source_id_prefix if str(prefix).strip()]
+    explicit_source_ids = _load_source_ids(args.source_ids_file)
 
     frame_total = 0
     processed_clips = 0
-    for source_id, video_path in _iter_videos(raw_dir=raw_dir, records=records):
+    for source_id, video_path in _iter_videos(
+        raw_dir=raw_dir,
+        records=records,
+        explicit_ids=explicit_source_ids,
+        prefixes=source_id_prefixes,
+    ):
         source_meta = source_index.get(source_id, {})
         locale = str(args.locale).strip()
         resolution = str(args.resolution).strip()
@@ -222,6 +272,8 @@ def main() -> int:
                 "clipsProcessed": processed_clips,
                 "framesExtracted": frame_total,
                 "outputDir": str(output_dir),
+                "sourceIdPrefixes": source_id_prefixes,
+                "sourceIdsFile": args.source_ids_file,
             },
             ensure_ascii=True,
             indent=2,
