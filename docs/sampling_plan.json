@@ -1,5 +1,5 @@
 {
-  "recordCount": 34634,
+  "recordCount": 37655,
   "agentCounts": {},
   "reviewedAgentCounts": {},
   "suggestedAgentCounts": {
@@ -118,16 +118,16 @@
     "RU": 30,
     "EN": 4194,
     "JP": 6582,
-    "unknown": 23828
+    "unknown": 26849
   },
   "resolutionCounts": {
     "1080p": 9432,
     "1440p": 1374,
-    "unknown": 23828
+    "unknown": 26849
   },
   "stateCounts": {
-    "inrun": 17045,
-    "other": 65,
+    "inrun": 20046,
+    "other": 85,
     "precheck": 17524
   },
   "sourceCounts": {
@@ -197,14 +197,34 @@
     "cv_pool_050": 401,
     "cv_pool_051": 439,
     "cv_pool_052": 386,
-    "cv_pool_053": 439
+    "cv_pool_053": 439,
+    "auto_agent_nekomiya_mana_001": 181,
+    "auto_agent_lucy_002": 101,
+    "auto_agent_astra_yao_003": 181,
+    "auto_agent_evelyn_004": 39,
+    "auto_agent_soldier_0_anby_005": 181,
+    "auto_agent_pulchra_006": 13,
+    "auto_agent_trigger_007": 135,
+    "auto_agent_yixuan_008": 181,
+    "auto_agent_pan_yinhu_009": 181,
+    "auto_agent_ju_fufu_010": 181,
+    "auto_agent_yuzuha_011": 181,
+    "auto_agent_seed_012": 181,
+    "auto_agent_orphie_magus_013": 181,
+    "auto_agent_lucia_014": 181,
+    "auto_agent_komano_manato_015": 181,
+    "auto_agent_yidhari_016": 181,
+    "auto_agent_dialyn_017": 18,
+    "auto_agent_banyue_018": 181,
+    "auto_agent_zhao_019": 181,
+    "auto_agent_ye_shunguang_020": 181
   },
   "localeResolutionCounts": {
     "RU:1080p": 30,
     "EN:1080p": 2820,
     "JP:1080p": 6582,
     "EN:1440p": 1374,
-    "unknown:unknown": 23828
+    "unknown:unknown": 26849
   },
   "deficits": {
     "agent_anby": 6000,
