@@ -7,6 +7,7 @@ Computer-vision package for match-time verification in VerifierApp.
 - Pre-check validation against drafted team.
 - In-run periodic icon verification.
 - Violation and low-confidence classification.
+- CV is for match-time verification only. Account import (UID, owned agents, stats, discs, amplifiers) belongs to `Inter-Knot-Arena-OCR_Scan`.
 
 ## Output contract
 
