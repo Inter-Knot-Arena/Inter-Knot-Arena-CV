@@ -302,6 +302,7 @@ def main() -> int:
     if trained_with_real:
         try:
             metrics = _train_real_model(x=x, y=y, label_names=labels, output_dir=output_dir)
+            trained_label_names = list(labels)
         except Exception:
             trained_with_real = False
             background_dir = Path(args.background_dir).resolve() if args.background_dir else None
@@ -311,6 +312,7 @@ def main() -> int:
                 samples_per_class=max(200, args.samples_per_class),
             )
             metrics = _synthetic_fallback_metrics(fallback)
+            trained_label_names = current_agent_ids()
     else:
         background_dir = Path(args.background_dir).resolve() if args.background_dir else None
         fallback = train_synthetic_model(
@@ -319,6 +321,7 @@ def main() -> int:
             samples_per_class=max(200, args.samples_per_class),
         )
         metrics = _synthetic_fallback_metrics(fallback)
+        trained_label_names = current_agent_ids()
 
     export_templates(templates_dir)
 
@@ -349,8 +352,8 @@ def main() -> int:
             "skippedRecords": skipped,
             "mode": "real" if trained_with_real else "synthetic_fallback",
             "rosterAgentCount": len(current_agent_ids()),
-            "trainedAgentCount": sum(1 for label in labels if label in set(current_agent_ids())),
-            "missingRosterAgents": [agent for agent in current_agent_ids() if agent not in set(labels)],
+            "trainedAgentCount": sum(1 for label in trained_label_names if label in set(current_agent_ids())),
+            "missingRosterAgents": [agent for agent in current_agent_ids() if agent not in set(trained_label_names)],
         }
     }
     with metrics_path.open("w", encoding="utf-8") as fh:
