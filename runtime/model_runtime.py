@@ -74,6 +74,20 @@ def _extract_probabilities(raw_output: object, labels: Sequence[str], class_id_m
             first_value = float(probs[0])
             if np.issubdtype(probs.dtype, np.integer) or first_value < 0.0 or first_value > 1.0:
                 return {}
+        if probs.size > 1:
+            total = float(np.sum(probs))
+            looks_like_probabilities = bool(
+                np.all(np.isfinite(probs))
+                and np.all(probs >= 0.0)
+                and np.all(probs <= 1.0)
+                and 0.95 <= total <= 1.05
+            )
+            if not looks_like_probabilities:
+                shifted = probs - float(np.max(probs))
+                exp_values = np.exp(shifted)
+                denom = float(np.sum(exp_values))
+                if denom > 0.0:
+                    probs = exp_values / denom
         return {
             label: float(probs[idx])
             for idx, label in enumerate(labels)
@@ -164,8 +178,8 @@ class CvAgentClassifier:
 
         for output in outputs:
             if label is None:
-                if isinstance(output, np.ndarray) and output.size > 0:
-                    label = _map_label_key(output[0], self.labels, self.class_id_map)
+                if isinstance(output, np.ndarray) and np.asarray(output).size == 1:
+                    label = _map_label_key(np.asarray(output).reshape(-1)[0], self.labels, self.class_id_map)
                 elif isinstance(output, list) and output:
                     label = _map_label_key(output[0], self.labels, self.class_id_map)
 
