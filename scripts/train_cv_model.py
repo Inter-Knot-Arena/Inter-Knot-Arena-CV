@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from manifest_lib import hash_file_sha256
 from roster_taxonomy import canonicalize_agent_label, current_agent_ids
-from train_synthetic_cv_model import export_templates, train_model as train_synthetic_model
+from train_synthetic_cv_model import export_templates
 
 DEFAULT_MODEL_VERSION = "cv-agent-head-v1.4"
 
@@ -54,6 +54,17 @@ def _torch_cuda_available() -> bool:
     import torch
 
     return bool(torch.cuda.is_available())
+
+
+def _cuda_onnx_providers() -> list[str]:
+    available = set(ort.get_available_providers())
+    if "CUDAExecutionProvider" not in available:
+        available_list = ", ".join(sorted(available)) or "none"
+        raise RuntimeError(
+            "CUDAExecutionProvider is required for CV ONNX validation. "
+            f"Available providers: {available_list}."
+        )
+    return ["CUDAExecutionProvider"]
 
 
 def _normalize_split_name(raw: Any) -> str:
@@ -275,8 +286,7 @@ def _latency_stats(clf: LogisticRegression, sample: np.ndarray, iterations: int 
 def _onnx_latency_stats(model_path: Path, sample: np.ndarray, iterations: int = 120) -> Tuple[float, float]:
     if sample.size == 0 or not model_path.exists():
         return 0.0, 0.0
-    providers = [provider for provider in ("DmlExecutionProvider", "CPUExecutionProvider") if provider in ort.get_available_providers()] or ["CPUExecutionProvider"]
-    session = ort.InferenceSession(str(model_path), providers=providers)
+    session = ort.InferenceSession(str(model_path), providers=_cuda_onnx_providers())
     input_name = session.get_inputs()[0].name
     latencies: List[float] = []
     count = min(iterations, max(20, sample.shape[0]))
@@ -320,18 +330,15 @@ def _synthetic_fallback_metrics(raw_metrics: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _resolve_backend(requested: str, requested_device: str) -> str:
-    if requested == "auto":
-        if not _torch_available():
-            return "sklearn"
-        if requested_device == "cuda" and not _torch_cuda_available():
-            return "sklearn"
-        return "torch"
-    if requested == "torch":
-        if not _torch_available():
-            raise ImportError("Torch backend requested, but torch is not installed.")
-        if requested_device == "cuda" and not _torch_cuda_available():
-            raise RuntimeError("Torch CUDA backend requested, but CUDA is not available.")
-    return requested
+    if requested != "torch":
+        raise RuntimeError("CV training is locked to the torch backend. CPU/sklearn fallback is disabled.")
+    if requested_device != "cuda":
+        raise RuntimeError("CV training is locked to CUDA. CPU execution is disabled.")
+    if not _torch_available():
+        raise ImportError("Torch backend requested, but torch is not installed.")
+    if not _torch_cuda_available():
+        raise RuntimeError("Torch CUDA backend requested, but CUDA is not available.")
+    return "torch"
 
 
 def _partition_dataset(
@@ -482,8 +489,10 @@ def _train_torch_model(
 
     device_name = requested_device.strip().lower()
     if device_name == "auto":
-        device_name = "cuda" if torch.cuda.is_available() else "cpu"
-    if device_name == "cuda" and not torch.cuda.is_available():
+        device_name = "cuda"
+    if device_name != "cuda":
+        raise RuntimeError("CV training is locked to CUDA. CPU execution is disabled.")
+    if not torch.cuda.is_available():
         raise RuntimeError("CUDA backend requested, but torch.cuda.is_available() is false.")
     device = torch.device(device_name)
 
@@ -589,18 +598,16 @@ def _train_torch_model(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Train CV agent icon model using manifest data with synthetic fallback.")
+    parser = argparse.ArgumentParser(description="Train CV agent icon model from manifest data on CUDA only.")
     parser.add_argument("--manifest", default="dataset_manifest.json")
     parser.add_argument("--output-dir", default="models")
     parser.add_argument("--templates-dir", default="assets/templates")
     parser.add_argument("--metrics-file", default="docs/model_metrics.json")
-    parser.add_argument("--background-dir", default="", help="Optional directory for synthetic fallback augmentation.")
-    parser.add_argument("--samples-per-class", type=int, default=1400, help="Synthetic fallback samples per class.")
     parser.add_argument("--min-real-samples", type=int, default=1200)
     parser.add_argument("--label-source", choices=["reviewed", "suggested", "any"], default="reviewed")
     parser.add_argument("--split-source", choices=["manifest", "random"], default="manifest")
-    parser.add_argument("--backend", choices=["auto", "sklearn", "torch"], default="auto")
-    parser.add_argument("--torch-device", choices=["auto", "cpu", "cuda"], default="cuda")
+    parser.add_argument("--backend", choices=["torch"], default="torch")
+    parser.add_argument("--torch-device", choices=["cuda"], default="cuda")
     parser.add_argument("--epochs", type=int, default=12)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--learning-rate", type=float, default=0.001)
@@ -621,52 +628,26 @@ def main() -> int:
         split_source=args.split_source,
     )
     trained_with_real = dataset.x.shape[0] >= max(20, args.min_real_samples) and len(dataset.label_names) >= 2
-    selected_backend = _resolve_backend(args.backend, args.torch_device)
-
-    if trained_with_real:
-        try:
-            if selected_backend == "torch":
-                metrics = _train_torch_model(
-                    x=dataset.x,
-                    y=dataset.y,
-                    label_names=dataset.label_names,
-                    output_dir=output_dir,
-                    sample_splits=dataset.sample_splits,
-                    split_source=dataset.split_mode,
-                    requested_device=args.torch_device,
-                    epochs=args.epochs,
-                    batch_size=args.batch_size,
-                    learning_rate=args.learning_rate,
-                )
-            else:
-                metrics = _train_sklearn_model(
-                    x=dataset.x,
-                    y=dataset.y,
-                    label_names=dataset.label_names,
-                    output_dir=output_dir,
-                    sample_splits=dataset.sample_splits,
-                    split_source=dataset.split_mode,
-                )
-            trained_label_names = list(dataset.label_names)
-        except Exception:
-            trained_with_real = False
-            background_dir = Path(args.background_dir).resolve() if args.background_dir else None
-            fallback = train_synthetic_model(
-                output_dir=output_dir,
-                background_dir=background_dir,
-                samples_per_class=max(200, args.samples_per_class),
-            )
-            metrics = _synthetic_fallback_metrics(fallback)
-            trained_label_names = current_agent_ids()
-    else:
-        background_dir = Path(args.background_dir).resolve() if args.background_dir else None
-        fallback = train_synthetic_model(
-            output_dir=output_dir,
-            background_dir=background_dir,
-            samples_per_class=max(200, args.samples_per_class),
+    _resolve_backend(args.backend, args.torch_device)
+    if not trained_with_real:
+        raise RuntimeError(
+            "CUDA-only CV training requires a reviewed real dataset. "
+            "Synthetic fallback is disabled."
         )
-        metrics = _synthetic_fallback_metrics(fallback)
-        trained_label_names = current_agent_ids()
+
+    metrics = _train_torch_model(
+        x=dataset.x,
+        y=dataset.y,
+        label_names=dataset.label_names,
+        output_dir=output_dir,
+        sample_splits=dataset.sample_splits,
+        split_source=dataset.split_mode,
+        requested_device=args.torch_device,
+        epochs=args.epochs,
+        batch_size=args.batch_size,
+        learning_rate=args.learning_rate,
+    )
+    trained_label_names = list(dataset.label_names)
 
     export_templates(templates_dir)
 
