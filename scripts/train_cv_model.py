@@ -6,6 +6,8 @@ import json
 import statistics
 import sys
 import time
+from collections import Counter
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
@@ -28,6 +30,16 @@ from train_synthetic_cv_model import export_templates, train_model as train_synt
 DEFAULT_MODEL_VERSION = "cv-agent-head-v1.4"
 
 
+@dataclass(slots=True)
+class LoadedDataset:
+    x: np.ndarray
+    y: np.ndarray
+    label_names: List[str]
+    skipped_records: int
+    sample_splits: List[str]
+    split_mode: str
+
+
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
@@ -44,29 +56,59 @@ def _torch_cuda_available() -> bool:
     return bool(torch.cuda.is_available())
 
 
-def _is_valid_agent_label(label: str) -> bool:
-    value = str(label or "").strip()
-    return bool(canonicalize_agent_label(value) or value == "unknown")
+def _normalize_split_name(raw: Any) -> str:
+    value = str(raw or "").strip().lower()
+    return value if value in {"train", "val", "test"} else ""
 
 
-def _extract_label(record: Dict[str, Any]) -> str:
+def _build_manifest_split_index(manifest: Dict[str, Any]) -> Dict[str, str]:
+    split_index: Dict[str, str] = {}
+    splits = manifest.get("splits")
+    if not isinstance(splits, dict):
+        return split_index
+    for split_name in ("train", "val", "test"):
+        record_ids = splits.get(split_name)
+        if not isinstance(record_ids, list):
+            continue
+        normalized = _normalize_split_name(split_name)
+        for record_id in record_ids:
+            if normalized:
+                split_index[str(record_id)] = normalized
+    return split_index
+
+
+def _select_label_payload(record: Dict[str, Any], label_source: str) -> Dict[str, Any] | None:
     labels = record.get("labels")
-    if isinstance(labels, dict):
-        for key in ("agentId", "slot_1_agent", "label"):
-            value = labels.get(key)
-            if isinstance(value, str) and value.strip():
-                candidate = value.strip()
-                canonical = canonicalize_agent_label(candidate)
-                if canonical:
-                    return canonical
-    for key in ("agentId", "label"):
-        value = record.get(key)
+    labels = labels if isinstance(labels, dict) else {}
+    suggested = record.get("suggestedLabels")
+    suggested = suggested if isinstance(suggested, dict) else {}
+
+    is_reviewed = (
+        str(record.get("qaStatus") or "").lower() == "reviewed"
+        and isinstance(labels.get("reviewFinal"), dict)
+    )
+    if label_source == "reviewed":
+        return labels if is_reviewed else None
+    if label_source == "suggested":
+        return suggested or None
+    if is_reviewed:
+        return labels
+    if labels:
+        return labels
+    return suggested or None
+
+
+def _extract_label(payload: Dict[str, Any]) -> str:
+    for key in ("agentId", "slot_1_agent", "label"):
+        value = payload.get(key)
         if isinstance(value, str) and value.strip():
             candidate = value.strip()
             canonical = canonicalize_agent_label(candidate)
             if canonical:
                 return canonical
-    unknown_flag = record.get("unknownFlag")
+    unknown_flag = payload.get("unknownFlag")
+    if unknown_flag is None:
+        unknown_flag = payload.get("unknown_flag")
     if unknown_flag is True:
         return "unknown"
     return ""
@@ -90,14 +132,13 @@ def _slot_crops(frame: np.ndarray, orientation: str, slots: int = 3) -> List[np.
     return crops
 
 
-def _extract_slot_labels(record: Dict[str, Any]) -> List[Tuple[int, str]]:
-    labels = record.get("labels")
-    if not isinstance(labels, dict):
+def _extract_slot_labels(payload: Dict[str, Any]) -> List[Tuple[int, str]]:
+    if not isinstance(payload, dict):
         return []
     slot_labels: List[Tuple[int, str]] = []
     for idx in range(1, 4):
         key = f"slot_{idx}_agent"
-        value = labels.get(key)
+        value = payload.get(key)
         if isinstance(value, str) and value.strip():
             candidate = value.strip()
             canonical = canonicalize_agent_label(candidate)
@@ -106,28 +147,40 @@ def _extract_slot_labels(record: Dict[str, Any]) -> List[Tuple[int, str]]:
     return slot_labels
 
 
-def _load_dataset(manifest_path: Path) -> Tuple[np.ndarray, np.ndarray, List[str], int]:
+def _load_dataset(manifest_path: Path, label_source: str, split_source: str) -> LoadedDataset:
     with manifest_path.open("r", encoding="utf-8") as fh:
         manifest = json.load(fh)
     records = manifest.get("records", [])
     if not isinstance(records, list):
         raise ValueError("manifest.records must be an array")
+    split_index = _build_manifest_split_index(manifest) if split_source == "manifest" else {}
 
     features: List[np.ndarray] = []
     labels: List[str] = []
+    sample_splits: List[str] = []
     skipped = 0
     for record in records:
         if not isinstance(record, dict):
+            skipped += 1
+            continue
+        payload = _select_label_payload(record, label_source=label_source)
+        if not isinstance(payload, dict):
             skipped += 1
             continue
         path_value = str(record.get("path") or "")
         if not path_value:
             skipped += 1
             continue
-        label = _extract_label(record)
+        label = _extract_label(payload)
         if not label:
             skipped += 1
             continue
+        split_name = ""
+        if split_source == "manifest":
+            split_name = _normalize_split_name(split_index.get(str(record.get("id") or "")))
+            if not split_name:
+                skipped += 1
+                continue
         path = Path(path_value)
         if not path.exists():
             skipped += 1
@@ -137,7 +190,7 @@ def _load_dataset(manifest_path: Path) -> Tuple[np.ndarray, np.ndarray, List[str
             skipped += 1
             continue
 
-        slot_labels = _extract_slot_labels(record)
+        slot_labels = _extract_slot_labels(payload)
         if slot_labels:
             state = str(record.get("state") or "other").lower()
             orientation = "horizontal" if state == "precheck" else "vertical"
@@ -149,6 +202,7 @@ def _load_dataset(manifest_path: Path) -> Tuple[np.ndarray, np.ndarray, List[str
                 crop = cv2.resize(crops[slot_index], (32, 32), interpolation=cv2.INTER_AREA)
                 features.append(crop.astype(np.float32).reshape(-1) / 255.0)
                 labels.append(slot_label)
+                sample_splits.append(split_name)
                 added += 1
             if added <= 0:
                 skipped += 1
@@ -157,15 +211,30 @@ def _load_dataset(manifest_path: Path) -> Tuple[np.ndarray, np.ndarray, List[str
         image = cv2.resize(image, (32, 32), interpolation=cv2.INTER_AREA)
         features.append(image.astype(np.float32).reshape(-1) / 255.0)
         labels.append(label)
+        sample_splits.append(split_name)
 
     if not features:
-        return np.empty((0, 3072), dtype=np.float32), np.empty((0,), dtype=np.int64), [], skipped
+        return LoadedDataset(
+            x=np.empty((0, 3072), dtype=np.float32),
+            y=np.empty((0,), dtype=np.int64),
+            label_names=[],
+            skipped_records=skipped,
+            sample_splits=[],
+            split_mode=split_source,
+        )
 
     label_names = sorted(set(labels))
     index_map = {label: idx for idx, label in enumerate(label_names)}
     y = np.array([index_map[label] for label in labels], dtype=np.int64)
     x = np.vstack(features).astype(np.float32)
-    return x, y, label_names, skipped
+    return LoadedDataset(
+        x=x,
+        y=y,
+        label_names=label_names,
+        skipped_records=skipped,
+        sample_splits=sample_splits,
+        split_mode=split_source,
+    )
 
 
 def _expected_calibration_error(y_true: np.ndarray, probs: np.ndarray, bins: int = 15) -> float:
@@ -245,6 +314,8 @@ def _synthetic_fallback_metrics(raw_metrics: Dict[str, Any]) -> Dict[str, Any]:
         "evaluationMode": "synthetic_holdout_only",
         "trainingBackend": "synthetic_baseline",
         "trainingDevice": "cpu",
+        "splitMode": "synthetic_only",
+        "splitCounts": {},
     }
 
 
@@ -263,22 +334,31 @@ def _resolve_backend(requested: str, requested_device: str) -> str:
     return requested
 
 
-def _reshape_for_torch(x: np.ndarray) -> np.ndarray:
-    return np.transpose(x.reshape((-1, 32, 32, 3)), (0, 3, 1, 2)).astype(np.float32)
-
-
-def _train_sklearn_model(
+def _partition_dataset(
     x: np.ndarray,
     y: np.ndarray,
-    label_names: List[str],
-    output_dir: Path,
-) -> Dict[str, Any]:
-    if x.shape[0] < 10:
-        raise ValueError("Not enough samples for real training.")
+    sample_splits: List[str],
+    split_source: str,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, str, Dict[str, int]]:
+    if split_source == "manifest":
+        split_counts = Counter(split for split in sample_splits if split)
+        if all(split_counts.get(name, 0) > 0 for name in ("train", "val", "test")):
+            split_array = np.array(sample_splits)
+            train_mask = split_array == "train"
+            val_mask = split_array == "val"
+            test_mask = split_array == "test"
+            return (
+                x[train_mask],
+                x[val_mask],
+                x[test_mask],
+                y[train_mask],
+                y[val_mask],
+                y[test_mask],
+                "manifest",
+                {name: int(split_counts.get(name, 0)) for name in ("train", "val", "test")},
+            )
+        raise ValueError("Manifest splits are missing train/val/test samples for the filtered dataset.")
 
-    values, counts = np.unique(y, return_counts=True)
-    if values.size < 2:
-        raise ValueError("Need at least two classes for real training.")
     x_train, x_temp, y_train, y_temp = train_test_split(
         x,
         y,
@@ -292,6 +372,42 @@ def _train_sklearn_model(
         test_size=0.5,
         random_state=42,
         stratify=_stratify_target(y_temp),
+    )
+    return (
+        x_train,
+        x_val,
+        x_test,
+        y_train,
+        y_val,
+        y_test,
+        "random",
+        {"train": int(x_train.shape[0]), "val": int(x_val.shape[0]), "test": int(x_test.shape[0])},
+    )
+
+
+def _reshape_for_torch(x: np.ndarray) -> np.ndarray:
+    return np.transpose(x.reshape((-1, 32, 32, 3)), (0, 3, 1, 2)).astype(np.float32)
+
+
+def _train_sklearn_model(
+    x: np.ndarray,
+    y: np.ndarray,
+    label_names: List[str],
+    output_dir: Path,
+    sample_splits: List[str],
+    split_source: str,
+) -> Dict[str, Any]:
+    if x.shape[0] < 10:
+        raise ValueError("Not enough samples for real training.")
+
+    values, counts = np.unique(y, return_counts=True)
+    if values.size < 2:
+        raise ValueError("Need at least two classes for real training.")
+    x_train, x_val, x_test, y_train, y_val, y_test, split_mode, split_counts = _partition_dataset(
+        x=x,
+        y=y,
+        sample_splits=sample_splits,
+        split_source=split_source,
     )
 
     clf = LogisticRegression(max_iter=1000, solver="lbfgs")
@@ -329,6 +445,8 @@ def _train_sklearn_model(
         "evaluationMode": "real_holdout",
         "trainingBackend": "sklearn_logreg",
         "trainingDevice": "cpu",
+        "splitMode": split_mode,
+        "splitCounts": split_counts,
     }
 
 
@@ -337,6 +455,8 @@ def _train_torch_model(
     y: np.ndarray,
     label_names: List[str],
     output_dir: Path,
+    sample_splits: List[str],
+    split_source: str,
     requested_device: str,
     epochs: int,
     batch_size: int,
@@ -353,19 +473,11 @@ def _train_torch_model(
         raise ValueError("Need at least two classes for real training.")
 
     images = _reshape_for_torch(x)
-    x_train, x_temp, y_train, y_temp = train_test_split(
-        images,
-        y,
-        test_size=0.2,
-        random_state=42,
-        stratify=_stratify_target(y),
-    )
-    x_val, x_test, y_val, y_test = train_test_split(
-        x_temp,
-        y_temp,
-        test_size=0.5,
-        random_state=42,
-        stratify=_stratify_target(y_temp),
+    x_train, x_val, x_test, y_train, y_val, y_test, split_mode, split_counts = _partition_dataset(
+        x=images,
+        y=y,
+        sample_splits=sample_splits,
+        split_source=split_source,
     )
 
     device_name = requested_device.strip().lower()
@@ -471,6 +583,8 @@ def _train_torch_model(
         "evaluationMode": "real_holdout",
         "trainingBackend": "torch_cnn",
         "trainingDevice": device.type,
+        "splitMode": split_mode,
+        "splitCounts": split_counts,
     }
 
 
@@ -483,6 +597,8 @@ def main() -> int:
     parser.add_argument("--background-dir", default="", help="Optional directory for synthetic fallback augmentation.")
     parser.add_argument("--samples-per-class", type=int, default=1400, help="Synthetic fallback samples per class.")
     parser.add_argument("--min-real-samples", type=int, default=1200)
+    parser.add_argument("--label-source", choices=["reviewed", "suggested", "any"], default="reviewed")
+    parser.add_argument("--split-source", choices=["manifest", "random"], default="manifest")
     parser.add_argument("--backend", choices=["auto", "sklearn", "torch"], default="auto")
     parser.add_argument("--torch-device", choices=["auto", "cpu", "cuda"], default="cuda")
     parser.add_argument("--epochs", type=int, default=12)
@@ -499,26 +615,39 @@ def main() -> int:
     metrics_path = Path(args.metrics_file).resolve()
     metrics_path.parent.mkdir(parents=True, exist_ok=True)
 
-    x, y, labels, skipped = _load_dataset(manifest_path=manifest_path)
-    trained_with_real = x.shape[0] >= max(20, args.min_real_samples) and len(labels) >= 2
+    dataset = _load_dataset(
+        manifest_path=manifest_path,
+        label_source=args.label_source,
+        split_source=args.split_source,
+    )
+    trained_with_real = dataset.x.shape[0] >= max(20, args.min_real_samples) and len(dataset.label_names) >= 2
     selected_backend = _resolve_backend(args.backend, args.torch_device)
 
     if trained_with_real:
         try:
             if selected_backend == "torch":
                 metrics = _train_torch_model(
-                    x=x,
-                    y=y,
-                    label_names=labels,
+                    x=dataset.x,
+                    y=dataset.y,
+                    label_names=dataset.label_names,
                     output_dir=output_dir,
+                    sample_splits=dataset.sample_splits,
+                    split_source=dataset.split_mode,
                     requested_device=args.torch_device,
                     epochs=args.epochs,
                     batch_size=args.batch_size,
                     learning_rate=args.learning_rate,
                 )
             else:
-                metrics = _train_sklearn_model(x=x, y=y, label_names=labels, output_dir=output_dir)
-            trained_label_names = list(labels)
+                metrics = _train_sklearn_model(
+                    x=dataset.x,
+                    y=dataset.y,
+                    label_names=dataset.label_names,
+                    output_dir=output_dir,
+                    sample_splits=dataset.sample_splits,
+                    split_source=dataset.split_mode,
+                )
+            trained_label_names = list(dataset.label_names)
         except Exception:
             trained_with_real = False
             background_dir = Path(args.background_dir).resolve() if args.background_dir else None
@@ -565,9 +694,10 @@ def main() -> int:
             **metrics,
             "dataVersion": data_version,
             "trainedAt": model_manifest["trainedAt"],
-            "recordCount": int(x.shape[0]),
-            "skippedRecords": skipped,
+            "recordCount": int(dataset.x.shape[0]),
+            "skippedRecords": dataset.skipped_records,
             "mode": "real" if trained_with_real else "synthetic_fallback",
+            "labelSource": args.label_source,
             "rosterAgentCount": len(current_agent_ids()),
             "trainedAgentCount": sum(1 for label in trained_label_names if label in set(current_agent_ids())),
             "missingRosterAgents": [agent for agent in current_agent_ids() if agent not in set(trained_label_names)],
