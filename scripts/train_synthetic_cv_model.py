@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -13,19 +15,16 @@ from sklearn.model_selection import train_test_split
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 RNG = np.random.default_rng(73)
-AGENT_LABELS = [
-    "agent_anby",
-    "agent_nicole",
-    "agent_ellen",
-    "agent_lycaon",
-    "agent_koleda",
-    "agent_vivian",
-]
+from roster_taxonomy import current_agent_ids
+
+AGENT_LABELS = current_agent_ids()
 
 
 def _agent_color(label: str) -> Tuple[int, int, int]:
-    digest = abs(hash(f"cv:{label}"))
+    digest = int.from_bytes(hashlib.sha256(f"cv:{label}".encode("utf-8")).digest()[:8], "big")
     return (
         80 + digest % 120,
         80 + (digest // 11) % 120,
@@ -119,7 +118,12 @@ def train_model(
     with model_path.open("wb") as fh:
         fh.write(onnx_model.SerializeToString())
     with labels_path.open("w", encoding="utf-8") as fh:
-        json.dump({"labels": AGENT_LABELS}, fh, ensure_ascii=True, indent=2)
+        json.dump(
+            {"labels": AGENT_LABELS, "classIds": list(range(len(AGENT_LABELS)))},
+            fh,
+            ensure_ascii=True,
+            indent=2,
+        )
         fh.write("\n")
 
     return {
