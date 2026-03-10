@@ -152,7 +152,9 @@ class CvAgentClassifier:
             raise FileNotFoundError(f"CV labels missing: {self.labels_path}")
         self.labels, self.class_id_map = _read_labels(self.labels_path)
         self.session = ort.InferenceSession(str(self.model_path), providers=_provider_priority())
-        self.input_name = self.session.get_inputs()[0].name
+        input_meta = self.session.get_inputs()[0]
+        self.input_name = input_meta.name
+        self.input_shape = tuple(input_meta.shape)
         self.output_names = [output.name for output in self.session.get_outputs()]
 
     @classmethod
@@ -166,11 +168,66 @@ class CvAgentClassifier:
     def exists(cls) -> bool:
         return (MODEL_DIR / "cv_agent_icon.onnx").exists() and (MODEL_DIR / "cv_agent_icon.labels.json").exists()
 
+    def expects_image_input(self) -> bool:
+        return len(self.input_shape) == 4
+
+    def _expected_channel_count(self) -> int | None:
+        if not self.expects_image_input():
+            return None
+        for raw_value in (self.input_shape[1], self.input_shape[-1]):
+            if isinstance(raw_value, (int, np.integer)) and int(raw_value) in {1, 3}:
+                return int(raw_value)
+        return None
+
+    def _expects_nchw(self) -> bool:
+        if not self.expects_image_input():
+            return False
+        value = self.input_shape[1]
+        return isinstance(value, (int, np.integer)) and int(value) in {1, 3}
+
+    def _expects_nhwc(self) -> bool:
+        if not self.expects_image_input():
+            return False
+        value = self.input_shape[-1]
+        return isinstance(value, (int, np.integer)) and int(value) in {1, 3}
+
+    def _prepare_input(self, icon: np.ndarray) -> np.ndarray:
+        array = np.asarray(icon, dtype=np.float32)
+        if not self.expects_image_input():
+            if array.ndim == 1:
+                return array.reshape(1, -1)
+            if array.ndim == 2 and array.shape[0] == 1:
+                return array
+            return array.reshape(1, -1)
+
+        if array.ndim == 2:
+            array = array[:, :, None]
+        if array.ndim == 3:
+            channel_count = self._expected_channel_count()
+            if self._expects_nchw():
+                if channel_count is not None and array.shape[0] != channel_count and array.shape[-1] == channel_count:
+                    array = np.transpose(array, (2, 0, 1))
+                return array.reshape(1, *array.shape)
+            if self._expects_nhwc():
+                if channel_count is not None and array.shape[-1] != channel_count and array.shape[0] == channel_count:
+                    array = np.transpose(array, (1, 2, 0))
+                return array.reshape(1, *array.shape)
+            return array.reshape(1, *array.shape)
+        if array.ndim == 4:
+            channel_count = self._expected_channel_count()
+            if self._expects_nchw() and channel_count is not None and array.shape[1] != channel_count and array.shape[-1] == channel_count:
+                array = np.transpose(array, (0, 3, 1, 2))
+            elif self._expects_nhwc() and channel_count is not None and array.shape[-1] != channel_count and array.shape[1] == channel_count:
+                array = np.transpose(array, (0, 2, 3, 1))
+            return array
+        raise ValueError("icon input must be 1D, 2D, 3D, or 4D")
+
     def predict(self, icon: np.ndarray) -> Prediction:
         if icon.ndim == 2:
             icon = cv2.cvtColor(icon, cv2.COLOR_GRAY2BGR)
         resized = cv2.resize(icon, (32, 32), interpolation=cv2.INTER_AREA)
-        feature = (resized.astype(np.float32) / 255.0).reshape(1, -1)
+        normalized = resized.astype(np.float32) / 255.0
+        feature = self._prepare_input(normalized if self.expects_image_input() else normalized.reshape(-1))
 
         outputs = self.session.run(self.output_names, {self.input_name: feature})
         label: str | None = None

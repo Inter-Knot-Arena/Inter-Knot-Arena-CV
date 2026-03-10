@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import statistics
 import sys
@@ -11,6 +12,7 @@ from typing import Any, Dict, List, Tuple
 
 import cv2
 import numpy as np
+import onnxruntime as ort
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
@@ -23,11 +25,23 @@ from manifest_lib import hash_file_sha256
 from roster_taxonomy import canonicalize_agent_label, current_agent_ids
 from train_synthetic_cv_model import export_templates, train_model as train_synthetic_model
 
-DEFAULT_MODEL_VERSION = "cv-agent-head-v1.3"
+DEFAULT_MODEL_VERSION = "cv-agent-head-v1.4"
 
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def _torch_available() -> bool:
+    return importlib.util.find_spec("torch") is not None
+
+
+def _torch_cuda_available() -> bool:
+    if not _torch_available():
+        return False
+    import torch
+
+    return bool(torch.cuda.is_available())
 
 
 def _is_valid_agent_label(label: str) -> bool:
@@ -39,12 +53,12 @@ def _extract_label(record: Dict[str, Any]) -> str:
     labels = record.get("labels")
     if isinstance(labels, dict):
         for key in ("agentId", "slot_1_agent", "label"):
-                value = labels.get(key)
-                if isinstance(value, str) and value.strip():
-                    candidate = value.strip()
-                    canonical = canonicalize_agent_label(candidate)
-                    if canonical:
-                        return canonical
+            value = labels.get(key)
+            if isinstance(value, str) and value.strip():
+                candidate = value.strip()
+                canonical = canonicalize_agent_label(candidate)
+                if canonical:
+                    return canonical
     for key in ("agentId", "label"):
         value = record.get(key)
         if isinstance(value, str) and value.strip():
@@ -189,6 +203,24 @@ def _latency_stats(clf: LogisticRegression, sample: np.ndarray, iterations: int 
     return round(p50, 3), round(p95, 3)
 
 
+def _onnx_latency_stats(model_path: Path, sample: np.ndarray, iterations: int = 120) -> Tuple[float, float]:
+    if sample.size == 0 or not model_path.exists():
+        return 0.0, 0.0
+    providers = [provider for provider in ("DmlExecutionProvider", "CPUExecutionProvider") if provider in ort.get_available_providers()] or ["CPUExecutionProvider"]
+    session = ort.InferenceSession(str(model_path), providers=providers)
+    input_name = session.get_inputs()[0].name
+    latencies: List[float] = []
+    count = min(iterations, max(20, sample.shape[0]))
+    for idx in range(count):
+        row = sample[idx % sample.shape[0] : (idx % sample.shape[0]) + 1].astype(np.float32, copy=False)
+        started = time.perf_counter()
+        _ = session.run(None, {input_name: row})
+        latencies.append((time.perf_counter() - started) * 1000.0)
+    p50 = float(statistics.median(latencies))
+    p95 = float(np.percentile(np.array(latencies, dtype=np.float32), 95))
+    return round(p50, 3), round(p95, 3)
+
+
 def _stratify_target(y: np.ndarray) -> np.ndarray | None:
     if y.size <= 1:
         return None
@@ -211,15 +243,36 @@ def _synthetic_fallback_metrics(raw_metrics: Dict[str, Any]) -> Dict[str, Any]:
         "latencyMsP95": None,
         "backgroundCount": int(raw_metrics.get("backgroundCount", 0)),
         "evaluationMode": "synthetic_holdout_only",
+        "trainingBackend": "synthetic_baseline",
+        "trainingDevice": "cpu",
     }
 
 
-def _train_real_model(
+def _resolve_backend(requested: str, requested_device: str) -> str:
+    if requested == "auto":
+        if not _torch_available():
+            return "sklearn"
+        if requested_device == "cuda" and not _torch_cuda_available():
+            return "sklearn"
+        return "torch"
+    if requested == "torch":
+        if not _torch_available():
+            raise ImportError("Torch backend requested, but torch is not installed.")
+        if requested_device == "cuda" and not _torch_cuda_available():
+            raise RuntimeError("Torch CUDA backend requested, but CUDA is not available.")
+    return requested
+
+
+def _reshape_for_torch(x: np.ndarray) -> np.ndarray:
+    return np.transpose(x.reshape((-1, 32, 32, 3)), (0, 3, 1, 2)).astype(np.float32)
+
+
+def _train_sklearn_model(
     x: np.ndarray,
     y: np.ndarray,
     label_names: List[str],
     output_dir: Path,
-) -> Dict[str, float]:
+) -> Dict[str, Any]:
     if x.shape[0] < 10:
         raise ValueError("Not enough samples for real training.")
 
@@ -273,6 +326,151 @@ def _train_real_model(
         "latencyMsP50": latency_p50,
         "latencyMsP95": latency_p95,
         "backgroundCount": 0,
+        "evaluationMode": "real_holdout",
+        "trainingBackend": "sklearn_logreg",
+        "trainingDevice": "cpu",
+    }
+
+
+def _train_torch_model(
+    x: np.ndarray,
+    y: np.ndarray,
+    label_names: List[str],
+    output_dir: Path,
+    requested_device: str,
+    epochs: int,
+    batch_size: int,
+    learning_rate: float,
+) -> Dict[str, Any]:
+    import torch
+    from torch import nn
+    from torch.utils.data import DataLoader, TensorDataset
+
+    if x.shape[0] < 10:
+        raise ValueError("Not enough samples for real training.")
+    values, counts = np.unique(y, return_counts=True)
+    if values.size < 2:
+        raise ValueError("Need at least two classes for real training.")
+
+    images = _reshape_for_torch(x)
+    x_train, x_temp, y_train, y_temp = train_test_split(
+        images,
+        y,
+        test_size=0.2,
+        random_state=42,
+        stratify=_stratify_target(y),
+    )
+    x_val, x_test, y_val, y_test = train_test_split(
+        x_temp,
+        y_temp,
+        test_size=0.5,
+        random_state=42,
+        stratify=_stratify_target(y_temp),
+    )
+
+    device_name = requested_device.strip().lower()
+    if device_name == "auto":
+        device_name = "cuda" if torch.cuda.is_available() else "cpu"
+    if device_name == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA backend requested, but torch.cuda.is_available() is false.")
+    device = torch.device(device_name)
+
+    num_classes = len(label_names)
+
+    class TinyCvClassifier(nn.Module):
+        def __init__(self, classes: int) -> None:
+            super().__init__()
+            self.features = nn.Sequential(
+                nn.Conv2d(3, 16, kernel_size=3, padding=1),
+                nn.ReLU(inplace=True),
+                nn.MaxPool2d(kernel_size=2),
+                nn.Conv2d(16, 32, kernel_size=3, padding=1),
+                nn.ReLU(inplace=True),
+                nn.MaxPool2d(kernel_size=2),
+                nn.Conv2d(32, 48, kernel_size=3, padding=1),
+                nn.ReLU(inplace=True),
+                nn.AdaptiveAvgPool2d((1, 1)),
+            )
+            self.classifier = nn.Linear(48, classes)
+
+        def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+            features = self.features(inputs)
+            flattened = torch.flatten(features, 1)
+            return self.classifier(flattened)
+
+    model = TinyCvClassifier(classes=num_classes).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=max(1e-5, float(learning_rate)))
+    criterion = nn.CrossEntropyLoss()
+
+    train_loader = DataLoader(
+        TensorDataset(torch.from_numpy(x_train), torch.from_numpy(y_train.astype(np.int64))),
+        batch_size=max(8, int(batch_size)),
+        shuffle=True,
+        drop_last=False,
+        pin_memory=device.type == "cuda",
+    )
+
+    for _ in range(max(1, int(epochs))):
+        model.train()
+        for batch_inputs, batch_targets in train_loader:
+            batch_inputs = batch_inputs.to(device=device, dtype=torch.float32, non_blocking=device.type == "cuda")
+            batch_targets = batch_targets.to(device=device, dtype=torch.long, non_blocking=device.type == "cuda")
+            optimizer.zero_grad(set_to_none=True)
+            logits = model(batch_inputs)
+            loss = criterion(logits, batch_targets)
+            loss.backward()
+            optimizer.step()
+
+    model.eval()
+    probabilities: List[np.ndarray] = []
+    with torch.no_grad():
+        for start in range(0, x_test.shape[0], max(1, int(batch_size))):
+            batch_np = x_test[start : start + max(1, int(batch_size))]
+            batch_tensor = torch.from_numpy(batch_np).to(device=device, dtype=torch.float32, non_blocking=device.type == "cuda")
+            logits = model(batch_tensor)
+            batch_probs = torch.softmax(logits, dim=1).cpu().numpy().astype(np.float32)
+            probabilities.append(batch_probs)
+    probs = np.vstack(probabilities) if probabilities else np.empty((0, num_classes), dtype=np.float32)
+    preds = np.argmax(probs, axis=1) if probs.size else np.empty((0,), dtype=np.int64)
+
+    accuracy = float(accuracy_score(y_test, preds))
+    macro_f1 = float(f1_score(y_test, preds, average="macro", zero_division=0.0))
+    precision = float(precision_score(y_test, preds, average="macro", zero_division=0.0))
+    recall = float(recall_score(y_test, preds, average="macro", zero_division=0.0))
+    ece = _expected_calibration_error(y_test, probs)
+
+    model_path = output_dir / "cv_agent_icon.onnx"
+    labels_path = output_dir / "cv_agent_icon.labels.json"
+    dummy_input = torch.from_numpy(x_train[:1]).to(device=device, dtype=torch.float32)
+    torch.onnx.export(
+        model,
+        dummy_input,
+        str(model_path),
+        export_params=True,
+        opset_version=17,
+        do_constant_folding=True,
+        dynamo=False,
+        input_names=["input"],
+        output_names=["logits"],
+        dynamic_axes={"input": {0: "batch"}, "logits": {0: "batch"}},
+    )
+    with labels_path.open("w", encoding="utf-8") as fh:
+        json.dump({"labels": label_names, "classIds": list(range(len(label_names)))}, fh, ensure_ascii=True, indent=2)
+        fh.write("\n")
+
+    latency_p50, latency_p95 = _onnx_latency_stats(model_path, x_val)
+    return {
+        "accuracy": accuracy,
+        "macroF1": macro_f1,
+        "precision": precision,
+        "recall": recall,
+        "ece": ece,
+        "latencyMsP50": latency_p50,
+        "latencyMsP95": latency_p95,
+        "backgroundCount": 0,
+        "evaluationMode": "real_holdout",
+        "trainingBackend": "torch_cnn",
+        "trainingDevice": device.type,
     }
 
 
@@ -285,6 +483,11 @@ def main() -> int:
     parser.add_argument("--background-dir", default="", help="Optional directory for synthetic fallback augmentation.")
     parser.add_argument("--samples-per-class", type=int, default=1400, help="Synthetic fallback samples per class.")
     parser.add_argument("--min-real-samples", type=int, default=1200)
+    parser.add_argument("--backend", choices=["auto", "sklearn", "torch"], default="auto")
+    parser.add_argument("--torch-device", choices=["auto", "cpu", "cuda"], default="cuda")
+    parser.add_argument("--epochs", type=int, default=12)
+    parser.add_argument("--batch-size", type=int, default=64)
+    parser.add_argument("--learning-rate", type=float, default=0.001)
     parser.add_argument("--model-version", default=DEFAULT_MODEL_VERSION)
     parser.add_argument("--data-version", default="")
     args = parser.parse_args()
@@ -298,10 +501,23 @@ def main() -> int:
 
     x, y, labels, skipped = _load_dataset(manifest_path=manifest_path)
     trained_with_real = x.shape[0] >= max(20, args.min_real_samples) and len(labels) >= 2
+    selected_backend = _resolve_backend(args.backend, args.torch_device)
 
     if trained_with_real:
         try:
-            metrics = _train_real_model(x=x, y=y, label_names=labels, output_dir=output_dir)
+            if selected_backend == "torch":
+                metrics = _train_torch_model(
+                    x=x,
+                    y=y,
+                    label_names=labels,
+                    output_dir=output_dir,
+                    requested_device=args.torch_device,
+                    epochs=args.epochs,
+                    batch_size=args.batch_size,
+                    learning_rate=args.learning_rate,
+                )
+            else:
+                metrics = _train_sklearn_model(x=x, y=y, label_names=labels, output_dir=output_dir)
             trained_label_names = list(labels)
         except Exception:
             trained_with_real = False
@@ -338,6 +554,7 @@ def main() -> int:
         "sha256": hash_file_sha256(model_path) if model_path.exists() else "",
         "trainedAt": _utc_now(),
         "dataVersion": data_version,
+        "backend": str(metrics.get("trainingBackend") or "unknown"),
     }
     with model_manifest_path.open("w", encoding="utf-8") as fh:
         json.dump(model_manifest, fh, ensure_ascii=True, indent=2)
