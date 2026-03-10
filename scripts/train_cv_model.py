@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -16,7 +17,10 @@ from sklearn.model_selection import train_test_split
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from manifest_lib import hash_file_sha256
+from roster_taxonomy import canonicalize_agent_label, current_agent_ids
 from train_synthetic_cv_model import export_templates, train_model as train_synthetic_model
 
 DEFAULT_MODEL_VERSION = "cv-agent-head-v1.3"
@@ -28,11 +32,7 @@ def _utc_now() -> str:
 
 def _is_valid_agent_label(label: str) -> bool:
     value = str(label or "").strip()
-    if not value:
-        return False
-    if value == "unknown":
-        return True
-    return value.startswith("agent_")
+    return bool(canonicalize_agent_label(value) or value == "unknown")
 
 
 def _extract_label(record: Dict[str, Any]) -> str:
@@ -42,14 +42,16 @@ def _extract_label(record: Dict[str, Any]) -> str:
                 value = labels.get(key)
                 if isinstance(value, str) and value.strip():
                     candidate = value.strip()
-                    if _is_valid_agent_label(candidate):
-                        return candidate
+                    canonical = canonicalize_agent_label(candidate)
+                    if canonical:
+                        return canonical
     for key in ("agentId", "label"):
         value = record.get(key)
         if isinstance(value, str) and value.strip():
             candidate = value.strip()
-            if _is_valid_agent_label(candidate):
-                return candidate
+            canonical = canonicalize_agent_label(candidate)
+            if canonical:
+                return canonical
     unknown_flag = record.get("unknownFlag")
     if unknown_flag is True:
         return "unknown"
@@ -84,8 +86,9 @@ def _extract_slot_labels(record: Dict[str, Any]) -> List[Tuple[int, str]]:
         value = labels.get(key)
         if isinstance(value, str) and value.strip():
             candidate = value.strip()
-            if _is_valid_agent_label(candidate):
-                slot_labels.append((idx - 1, candidate))
+            canonical = canonicalize_agent_label(candidate)
+            if canonical:
+                slot_labels.append((idx - 1, canonical))
     return slot_labels
 
 
@@ -197,6 +200,20 @@ def _stratify_target(y: np.ndarray) -> np.ndarray | None:
     return y
 
 
+def _synthetic_fallback_metrics(raw_metrics: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "accuracy": float(raw_metrics.get("accuracy", 0.0)),
+        "macroF1": None,
+        "precision": None,
+        "recall": None,
+        "ece": None,
+        "latencyMsP50": None,
+        "latencyMsP95": None,
+        "backgroundCount": int(raw_metrics.get("backgroundCount", 0)),
+        "evaluationMode": "synthetic_holdout_only",
+    }
+
+
 def _train_real_model(
     x: np.ndarray,
     y: np.ndarray,
@@ -293,16 +310,7 @@ def main() -> int:
                 background_dir=background_dir,
                 samples_per_class=max(200, args.samples_per_class),
             )
-            metrics = {
-                "accuracy": float(fallback.get("accuracy", 0.0)),
-                "macroF1": float(fallback.get("accuracy", 0.0)),
-                "precision": float(fallback.get("accuracy", 0.0)),
-                "recall": float(fallback.get("accuracy", 0.0)),
-                "ece": 0.0,
-                "latencyMsP50": 0.0,
-                "latencyMsP95": 0.0,
-                "backgroundCount": int(fallback.get("backgroundCount", 0)),
-            }
+            metrics = _synthetic_fallback_metrics(fallback)
     else:
         background_dir = Path(args.background_dir).resolve() if args.background_dir else None
         fallback = train_synthetic_model(
@@ -310,16 +318,7 @@ def main() -> int:
             background_dir=background_dir,
             samples_per_class=max(200, args.samples_per_class),
         )
-        metrics = {
-            "accuracy": float(fallback.get("accuracy", 0.0)),
-            "macroF1": float(fallback.get("accuracy", 0.0)),
-            "precision": float(fallback.get("accuracy", 0.0)),
-            "recall": float(fallback.get("accuracy", 0.0)),
-            "ece": 0.0,
-            "latencyMsP50": 0.0,
-            "latencyMsP95": 0.0,
-            "backgroundCount": int(fallback.get("backgroundCount", 0)),
-        }
+        metrics = _synthetic_fallback_metrics(fallback)
 
     export_templates(templates_dir)
 
@@ -349,6 +348,9 @@ def main() -> int:
             "recordCount": int(x.shape[0]),
             "skippedRecords": skipped,
             "mode": "real" if trained_with_real else "synthetic_fallback",
+            "rosterAgentCount": len(current_agent_ids()),
+            "trainedAgentCount": sum(1 for label in labels if label in set(current_agent_ids())),
+            "missingRosterAgents": [agent for agent in current_agent_ids() if agent not in set(labels)],
         }
     }
     with metrics_path.open("w", encoding="utf-8") as fh:
