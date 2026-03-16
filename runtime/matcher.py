@@ -255,6 +255,8 @@ def evaluate_detection(
     missing = [agent for agent in expected if agent not in detected]
     if missing:
         low_conf_reasons.append("missing_expected_agents")
+    if unexpected and not banned_detected:
+        low_conf_reasons.append("unexpected_agents_detected")
 
     for agent in detected:
         if agent not in confidence:
@@ -266,7 +268,7 @@ def evaluate_detection(
     if banned_detected:
         result = "VIOLATION"
     elif unexpected and expected:
-        result = "VIOLATION"
+        result = "LOW_CONF"
     elif low_conf_reasons:
         result = "LOW_CONF"
     else:
