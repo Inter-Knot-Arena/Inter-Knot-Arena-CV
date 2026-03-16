@@ -1,0 +1,101 @@
+{
+  "totals": {
+    "all": 37570,
+    "precheck": 17524,
+    "inrun": 20046
+  },
+  "valid": {
+    "all": 27800,
+    "precheck": 13119,
+    "inrun": 14681,
+    "gameplay_top_bar": 15280,
+    "menu_top_bar": 12520
+  },
+  "invalid": {
+    "all": 9770,
+    "precheck": 4405,
+    "inrun": 5365
+  },
+  "invalidSourcesTop20": [
+    {
+      "sourceId": "src_unknown",
+      "count": 879
+    },
+    {
+      "sourceId": "cv_pool_024",
+      "count": 303
+    },
+    {
+      "sourceId": "cv_recent_007",
+      "count": 281
+    },
+    {
+      "sourceId": "cv_recent_005",
+      "count": 238
+    },
+    {
+      "sourceId": "cv_recent_002",
+      "count": 222
+    },
+    {
+      "sourceId": "cv_recent_010",
+      "count": 203
+    },
+    {
+      "sourceId": "cv_recent_001",
+      "count": 199
+    },
+    {
+      "sourceId": "cv_recent_009",
+      "count": 194
+    },
+    {
+      "sourceId": "cv_recent_011",
+      "count": 192
+    },
+    {
+      "sourceId": "cv_recent_012",
+      "count": 192
+    },
+    {
+      "sourceId": "cv_recent_004",
+      "count": 191
+    },
+    {
+      "sourceId": "cv_recent_003",
+      "count": 188
+    },
+    {
+      "sourceId": "cv_recent_008",
+      "count": 188
+    },
+    {
+      "sourceId": "cv_pool_005",
+      "count": 183
+    },
+    {
+      "sourceId": "auto_agent_astra_yao_003",
+      "count": 164
+    },
+    {
+      "sourceId": "cv_pool_053",
+      "count": 159
+    },
+    {
+      "sourceId": "cv_recent_006",
+      "count": 154
+    },
+    {
+      "sourceId": "cv_pool_001",
+      "count": 142
+    },
+    {
+      "sourceId": "cv_pool_051",
+      "count": 133
+    },
+    {
+      "sourceId": "cv_pool_027",
+      "count": 128
+    }
+  ]
+}

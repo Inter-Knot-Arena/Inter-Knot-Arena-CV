@@ -15,17 +15,19 @@
 
 - Per-frame inference <= 50 ms on GTX 970 class GPU.
 - Monitoring cadence 10-20 sec with low overhead.
-- CPU fallback remains available when DirectML is unavailable.
+- Product runtime must stay on GPU; silent CPU fallback is not acceptable.
 
 ## Baseline implementation in repo
 
-- `scripts/train_cv_model.py` trains from manifest-backed real data and falls back to synthetic when data volume is insufficient.
+- `scripts/train_cv_model.py` trains from manifest-backed real data on CUDA only.
+- Product training is blocked when the dataset does not cover the full current roster, unless `--allow-partial-roster` is set explicitly for exploratory runs.
 - `scripts/train_synthetic_cv_model.py` exports synthetic baseline:
   - `models/cv_agent_icon.onnx`
   - `models/cv_agent_icon.labels.json`
   - `models/model_manifest.json`
   - `assets/templates/*.png`
-- Training script accepts private background frames (`--background-dir`) for domain adaptation to live UI.
+- `scripts/audit_team_strip_dataset.py` measures how much of the manifest actually contains a valid top team-strip.
+- `scripts/extract_frames.py` rejects `precheck` and `inrun` frames without a valid team-strip unless explicitly overridden.
 - `runtime/matcher.py` combines ONNX probabilities with template matching and temporal smoothing.
 - `scripts/benchmark_runtime.py` provides latency percentile benchmark.
 - Dataset ingestion pipeline scripts:

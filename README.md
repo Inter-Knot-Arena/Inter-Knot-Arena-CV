@@ -18,7 +18,7 @@ See `contracts/match-cv-output.schema.json`.
 - `runtime/matcher.py` exposes `evaluate_detection(...)`.
 - Frame-based detection path:
   - screenshot capture (`dxcam` DXGI first, fallback `PIL.ImageGrab`) or `--frame-path`
-  - slot crops
+  - layout-aware top team-strip crops
   - ONNX icon classifier + template matching
   - temporal smoothing for in-run
 - Result always contains:
@@ -50,11 +50,16 @@ pip install -r requirements.txt
 python scripts/train_synthetic_cv_model.py --output-dir models --templates-dir assets/templates --metrics-file docs/model_metrics.json
 ```
 
-Train production model from dataset manifest (with synthetic fallback when data is insufficient):
+Train production model from dataset manifest:
 
 ```powershell
 python scripts/train_cv_model.py --manifest dataset_manifest.json --output-dir models --templates-dir assets/templates --metrics-file docs/model_metrics.json --model-version cv-agent-head-v1.3
 ```
+
+Notes:
+- production training is CUDA-only
+- partial-roster training is blocked by default
+- use `--allow-partial-roster` only for exploratory audits
 
 Domain-adaptive training with private live backgrounds:
 
@@ -79,6 +84,7 @@ python scripts/deduplicate_frames.py --manifest dataset_manifest.json --input-di
 python scripts/session_capture.py --manifest dataset_manifest.json --mode cv --duration-sec 180 --fps 1.0 --state inrun --locale RU --resolution 1080p
 python scripts/prune_manifest.py --manifest dataset_manifest.json --drop-source live_session_1772675681 --drop-source live_session_1772677183
 python scripts/prelabel_dataset.py --manifest dataset_manifest.json --confidence-threshold 0.7
+python scripts/audit_team_strip_dataset.py --manifest dataset_manifest.json --output-json docs/team_strip_audit.json
 python scripts/qa_audit.py --manifest dataset_manifest.json --output-file docs/qa_report.json --double-review-file docs/double_review_samples.json
 python scripts/export_review_pack.py --manifest dataset_manifest.json --status needs_review --output-csv docs/review_queue.csv
 # after manual edit of docs/review_queue.csv:
@@ -88,6 +94,8 @@ python scripts/split_dataset.py --manifest dataset_manifest.json --seed 42
 ```
 
 Raw media and crops remain private/local and are not committed to git.
+
+`extract_frames.py` now validates the top team-strip by default for `precheck` and `inrun`. Use `--allow-missing-team-strip` only when auditing or backfilling obviously non-standard captures.
 
 ## Fullscreen capture notes
 

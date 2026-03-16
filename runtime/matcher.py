@@ -12,6 +12,7 @@ import cv2
 import numpy as np
 from PIL import ImageGrab
 
+from .layout import extract_team_slot_crops
 from .model_runtime import CvAgentClassifier, get_model_metadata, template_scores
 
 try:
@@ -144,24 +145,6 @@ def _read_frame(frame_path: str | None, region: Tuple[int, int, int, int] | None
     return _capture_frame(region)
 
 
-def _slot_crops(frame: np.ndarray, orientation: str = "vertical", slots: int = 3) -> list[np.ndarray]:
-    h, w = frame.shape[:2]
-    crops: list[np.ndarray] = []
-    if orientation == "horizontal":
-        step = max(1, w // slots)
-        for idx in range(slots):
-            x0 = idx * step
-            x1 = w if idx == slots - 1 else min(w, (idx + 1) * step)
-            crops.append(frame[:, x0:x1])
-    else:
-        step = max(1, h // slots)
-        for idx in range(slots):
-            y0 = idx * step
-            y1 = h if idx == slots - 1 else min(h, (idx + 1) * step)
-            crops.append(frame[y0:y1, :])
-    return crops
-
-
 def _classify_from_frame(
     frame: np.ndarray,
     orientation: str,
@@ -176,7 +159,12 @@ def _classify_from_frame(
         return detected, confidence, reasons
 
     classifier = CvAgentClassifier.instance()
-    for crop in _slot_crops(frame, orientation=orientation, slots=3):
+    slot_crops = extract_team_slot_crops(frame, slots=3)
+    if len(slot_crops) != 3:
+        reasons.append("team_strip_missing")
+        return detected, confidence, reasons
+
+    for crop in slot_crops:
         prediction = classifier.predict(crop)
         template = template_scores(crop)
         template_score = float(template.get(prediction.label, 0.0))

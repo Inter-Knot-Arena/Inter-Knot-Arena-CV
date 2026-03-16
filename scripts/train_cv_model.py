@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from manifest_lib import hash_file_sha256
 from roster_taxonomy import canonicalize_agent_label, current_agent_ids
+from runtime.layout import extract_team_slot_crops
 from train_synthetic_cv_model import export_templates
 
 DEFAULT_MODEL_VERSION = "cv-agent-head-v1.4"
@@ -125,24 +126,6 @@ def _extract_label(payload: Dict[str, Any]) -> str:
     return ""
 
 
-def _slot_crops(frame: np.ndarray, orientation: str, slots: int = 3) -> List[np.ndarray]:
-    h, w = frame.shape[:2]
-    crops: List[np.ndarray] = []
-    if orientation == "horizontal":
-        step = max(1, w // slots)
-        for idx in range(slots):
-            x0 = idx * step
-            x1 = w if idx == slots - 1 else min(w, (idx + 1) * step)
-            crops.append(frame[:, x0:x1])
-    else:
-        step = max(1, h // slots)
-        for idx in range(slots):
-            y0 = idx * step
-            y1 = h if idx == slots - 1 else min(h, (idx + 1) * step)
-            crops.append(frame[y0:y1, :])
-    return crops
-
-
 def _extract_slot_labels(payload: Dict[str, Any]) -> List[Tuple[int, str]]:
     if not isinstance(payload, dict):
         return []
@@ -203,9 +186,7 @@ def _load_dataset(manifest_path: Path, label_source: str, split_source: str) -> 
 
         slot_labels = _extract_slot_labels(payload)
         if slot_labels:
-            state = str(record.get("state") or "other").lower()
-            orientation = "horizontal" if state == "precheck" else "vertical"
-            crops = _slot_crops(image, orientation=orientation, slots=3)
+            crops = extract_team_slot_crops(image, slots=3)
             added = 0
             for slot_index, slot_label in slot_labels:
                 if slot_index < 0 or slot_index >= len(crops):
@@ -613,6 +594,12 @@ def main() -> int:
     parser.add_argument("--learning-rate", type=float, default=0.001)
     parser.add_argument("--model-version", default=DEFAULT_MODEL_VERSION)
     parser.add_argument("--data-version", default="")
+    parser.add_argument(
+        "--allow-partial-roster",
+        action="store_true",
+        default=False,
+        help="Allow exploratory training when the label set does not cover the full current roster.",
+    )
     args = parser.parse_args()
 
     manifest_path = Path(args.manifest).resolve()
@@ -627,6 +614,15 @@ def main() -> int:
         label_source=args.label_source,
         split_source=args.split_source,
     )
+    roster_agent_set = set(current_agent_ids())
+    trained_agent_names = sorted(label for label in dataset.label_names if label in roster_agent_set)
+    missing_roster_agents = [agent for agent in current_agent_ids() if agent not in set(trained_agent_names)]
+    if missing_roster_agents and not args.allow_partial_roster:
+        raise RuntimeError(
+            "CV training dataset does not cover the full current roster. "
+            f"Missing agents: {', '.join(missing_roster_agents[:8])}"
+            + ("..." if len(missing_roster_agents) > 8 else "")
+        )
     trained_with_real = dataset.x.shape[0] >= max(20, args.min_real_samples) and len(dataset.label_names) >= 2
     _resolve_backend(args.backend, args.torch_device)
     if not trained_with_real:
@@ -680,8 +676,8 @@ def main() -> int:
             "mode": "real" if trained_with_real else "synthetic_fallback",
             "labelSource": args.label_source,
             "rosterAgentCount": len(current_agent_ids()),
-            "trainedAgentCount": sum(1 for label in trained_label_names if label in set(current_agent_ids())),
-            "missingRosterAgents": [agent for agent in current_agent_ids() if agent not in set(trained_label_names)],
+            "trainedAgentCount": len(trained_agent_names),
+            "missingRosterAgents": missing_roster_agents,
         }
     }
     with metrics_path.open("w", encoding="utf-8") as fh:

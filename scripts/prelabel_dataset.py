@@ -13,29 +13,12 @@ from manifest_lib import ensure_manifest_defaults, load_manifest, save_manifest,
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from roster_taxonomy import canonicalize_agent_label
+from runtime.layout import extract_team_slot_crops
 from runtime.model_runtime import CvAgentClassifier, template_scores
 
 
 def _normalize_agent_label(label: str) -> str:
     return canonicalize_agent_label(label) or "unknown"
-
-
-def _slot_crops(frame: np.ndarray, orientation: str, slots: int = 3) -> List[np.ndarray]:
-    h, w = frame.shape[:2]
-    crops: List[np.ndarray] = []
-    if orientation == "horizontal":
-        step = max(1, w // slots)
-        for idx in range(slots):
-            x0 = idx * step
-            x1 = w if idx == slots - 1 else min(w, (idx + 1) * step)
-            crops.append(frame[:, x0:x1])
-    else:
-        step = max(1, h // slots)
-        for idx in range(slots):
-            y0 = idx * step
-            y1 = h if idx == slots - 1 else min(h, (idx + 1) * step)
-            crops.append(frame[y0:y1, :])
-    return crops
 
 
 def _predict_slot(classifier: CvAgentClassifier, crop: np.ndarray) -> Tuple[str, float]:
@@ -90,7 +73,6 @@ def _prelabel_record(
         return False, "decode_failed"
 
     state = str(record.get("state") or "other").lower()
-    orientation = "horizontal" if state == "precheck" else "vertical"
 
     labels: Dict[str, Any] = {
         "state": state,
@@ -103,7 +85,11 @@ def _prelabel_record(
     conf_map: Dict[str, float] = {}
     unknown = False
 
-    for index, crop in enumerate(_slot_crops(frame, orientation=orientation, slots=3), start=1):
+    slot_crops = extract_team_slot_crops(frame, slots=3)
+    if len(slot_crops) != 3:
+        return False, "team_strip_missing"
+
+    for index, crop in enumerate(slot_crops, start=1):
         label, confidence = _predict_slot(classifier=classifier, crop=crop)
         if confidence < confidence_threshold:
             label = "unknown"

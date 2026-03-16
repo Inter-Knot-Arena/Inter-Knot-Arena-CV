@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 
 from manifest_lib import ensure_manifest_defaults, load_manifest, save_manifest
+from runtime.layout import team_strip_present
 
 VIDEO_EXTENSIONS = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".m4v"}
 
@@ -161,6 +162,12 @@ def main() -> int:
     parser.add_argument("--max-frames-per-clip", type=int, default=400)
     parser.add_argument("--scene-aware", action="store_true", default=False)
     parser.add_argument("--scene-threshold", type=float, default=0.16)
+    parser.add_argument(
+        "--allow-missing-team-strip",
+        action="store_true",
+        default=False,
+        help="Keep sampled precheck/inrun frames even when the top team-strip validator fails.",
+    )
     parser.add_argument("--session-id", default="")
     parser.add_argument(
         "--source-id-prefix",
@@ -199,6 +206,7 @@ def main() -> int:
 
     frame_total = 0
     processed_clips = 0
+    skipped_missing_team_strip = 0
     for source_id, video_path in _iter_videos(
         raw_dir=raw_dir,
         records=records,
@@ -240,6 +248,12 @@ def main() -> int:
                 frame_index += 1
                 continue
 
+            requires_team_strip = args.state in {"precheck", "inrun"} and not args.allow_missing_team_strip
+            if requires_team_strip and not team_strip_present(frame, slots=3):
+                skipped_missing_team_strip += 1
+                frame_index += 1
+                continue
+
             frame_ts_ms = float(capture.get(cv2.CAP_PROP_POS_MSEC) or 0.0)
             file_name = f"{source_id}_{video_path.stem}_{args.state}_f{frame_index:06d}.jpg"
             output_path = output_dir / file_name
@@ -271,6 +285,7 @@ def main() -> int:
             {
                 "clipsProcessed": processed_clips,
                 "framesExtracted": frame_total,
+                "framesSkippedMissingTeamStrip": skipped_missing_team_strip,
                 "outputDir": str(output_dir),
                 "sourceIdPrefixes": source_id_prefixes,
                 "sourceIdsFile": args.source_ids_file,
